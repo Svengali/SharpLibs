@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CodeGeneration.Roslyn.Attributes</name>
+    </assembly>
+    <members>
+        <member name="T:CodeGeneration.Roslyn.CodeGenerationAttributeAttribute">
+            <summary>
+            A base attribute type for code generation attributes.
+            </summary>
+        </member>
+        <member name="M:CodeGeneration.Roslyn.CodeGenerationAttributeAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:CodeGeneration.Roslyn.CodeGenerationAttributeAttribute"/> class.
+            </summary>
+            <param name="generatorFullTypeName">
+            The fully-qualified type name (including assembly information)
+            of the code generator to activate.
+            This type must implement ICodeGenerator.
+            </param>
+        </member>
+        <member name="M:CodeGeneration.Roslyn.CodeGenerationAttributeAttribute.#ctor(System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:CodeGeneration.Roslyn.CodeGenerationAttributeAttribute"/> class.
+            </summary>
+            <param name="generatorType">The code generator that implements ICodeGenerator.</param>
+        </member>
+        <member name="P:CodeGeneration.Roslyn.CodeGenerationAttributeAttribute.GeneratorFullTypeName">
+            <summary>
+            Gets the fully-qualified type name (including assembly information)
+            of the code generator to activate.
+            </summary>
+        </member>
+    </members>
+</doc>

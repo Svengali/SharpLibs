@@ -1,0 +1,12 @@
+C:\prg\legba\src\libs\NetCore\bin\x64\Debug\netstandard2.0\NetCore.deps.json
+C:\prg\legba\src\libs\NetCore\bin\x64\Debug\netstandard2.0\NetCore.dll
+C:\prg\legba\src\libs\NetCore\bin\x64\Debug\netstandard2.0\NetCore.pdb
+C:\prg\legba\src\libs\NetCore\bin\x64\Debug\netstandard2.0\SharpLib.dll
+C:\prg\legba\src\libs\NetCore\bin\x64\Debug\netstandard2.0\SharpLib.pdb
+C:\prg\legba\src\libs\NetCore\obj\x64\Debug\netstandard2.0\NetCore.csprojAssemblyReference.cache
+C:\prg\legba\src\libs\NetCore\obj\x64\Debug\netstandard2.0\NetCore.csproj.CoreCompileInputs.cache
+C:\prg\legba\src\libs\NetCore\obj\x64\Debug\netstandard2.0\NetCore.AssemblyInfoInputs.cache
+C:\prg\legba\src\libs\NetCore\obj\x64\Debug\netstandard2.0\NetCore.AssemblyInfo.cs
+C:\prg\legba\src\libs\NetCore\obj\x64\Debug\netstandard2.0\NetCore.csproj.CopyComplete
+C:\prg\legba\src\libs\NetCore\obj\x64\Debug\netstandard2.0\NetCore.dll
+C:\prg\legba\src\libs\NetCore\obj\x64\Debug\netstandard2.0\NetCore.pdb

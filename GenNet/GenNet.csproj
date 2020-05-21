@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>gen</RootNamespace>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Validation" Version="2.4.22" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CodeGeneration.Roslyn\src\CodeGeneration.Roslyn.Attributes\CodeGeneration.Roslyn.Attributes.csproj" />
+    <ProjectReference Include="..\CodeGeneration.Roslyn\src\CodeGeneration.Roslyn\CodeGeneration.Roslyn.csproj" />
+    <ProjectReference Include="..\GenCore\GenCore.csproj" />
+    <ProjectReference Include="..\NetCore\NetCore.csproj" />
+  </ItemGroup>
+
+</Project>

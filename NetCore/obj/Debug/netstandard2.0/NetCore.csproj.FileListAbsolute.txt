@@ -1,0 +1,11 @@
+D:\prg\legba.old2\src\libs\NetCore\obj\Debug\netstandard2.0\NetCore.csprojAssemblyReference.cache
+D:\prg\legba.old2\src\libs\NetCore\obj\Debug\netstandard2.0\NetCore.AssemblyInfoInputs.cache
+D:\prg\legba.old2\src\libs\NetCore\obj\Debug\netstandard2.0\NetCore.AssemblyInfo.cs
+D:\prg\legba.old2\src\libs\NetCore\bin\Debug\netstandard2.0\NetCore.deps.json
+D:\prg\legba.old2\src\libs\NetCore\bin\Debug\netstandard2.0\NetCore.dll
+D:\prg\legba.old2\src\libs\NetCore\bin\Debug\netstandard2.0\NetCore.pdb
+D:\prg\legba.old2\src\libs\NetCore\bin\Debug\netstandard2.0\SharpLib.dll
+D:\prg\legba.old2\src\libs\NetCore\bin\Debug\netstandard2.0\SharpLib.pdb
+D:\prg\legba.old2\src\libs\NetCore\obj\Debug\netstandard2.0\NetCore.csproj.CopyComplete
+D:\prg\legba.old2\src\libs\NetCore\obj\Debug\netstandard2.0\NetCore.dll
+D:\prg\legba.old2\src\libs\NetCore\obj\Debug\netstandard2.0\NetCore.pdb

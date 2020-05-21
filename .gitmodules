@@ -1,0 +1,18 @@
+[submodule "SharpLib"]
+	path = SharpLib
+	url = https://github.com/Svengali/SharpLib.git
+[submodule "CodeGeneration.Roslyn"]
+	path = CodeGeneration.Roslyn
+	url = https://github.com/Svengali/CodeGeneration.Roslyn
+[submodule "veldrid"]
+	path = veldrid
+	url = https://github.com/Svengali/veldrid
+[submodule "geometry3Sharp"]
+	path = geometry3Sharp
+	url = https://github.com/Svengali/geometry3Sharp
+[submodule "Ceras"]
+	path = Ceras
+	url = https://github.com/Svengali/Ceras
+[submodule "MathSharp"]
+	path = MathSharp
+	url = https://github.com/Svengali/MathSharp

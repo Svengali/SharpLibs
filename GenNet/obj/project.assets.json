@@ -5899,18 +5899,17 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\prg\\legba.old2\\src\\libs\\GenNet\\GenNet.csproj",
+      "projectUniqueName": "D:\\prg\\Legba\\src\\libs\\GenNet\\GenNet.csproj",
       "projectName": "GenNet",
-      "projectPath": "D:\\prg\\legba.old2\\src\\libs\\GenNet\\GenNet.csproj",
+      "projectPath": "D:\\prg\\Legba\\src\\libs\\GenNet\\GenNet.csproj",
       "packagesPath": "C:\\Users\\marcs\\.nuget\\packages\\",
-      "outputPath": "D:\\prg\\legba.old2\\src\\libs\\GenNet\\obj\\",
+      "outputPath": "D:\\prg\\Legba\\src\\libs\\GenNet\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "D:\\prg\\legba.old2\\src\\NuGet.Config",
         "C:\\Users\\marcs\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
@@ -5925,17 +5924,17 @@
       "frameworks": {
         "netstandard2.0": {
           "projectReferences": {
-            "D:\\prg\\legba.old2\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn.Attributes\\CodeGeneration.Roslyn.Attributes.csproj": {
-              "projectPath": "D:\\prg\\legba.old2\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn.Attributes\\CodeGeneration.Roslyn.Attributes.csproj"
+            "D:\\prg\\Legba\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn.Attributes\\CodeGeneration.Roslyn.Attributes.csproj": {
+              "projectPath": "D:\\prg\\Legba\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn.Attributes\\CodeGeneration.Roslyn.Attributes.csproj"
             },
-            "D:\\prg\\legba.old2\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn\\CodeGeneration.Roslyn.csproj": {
-              "projectPath": "D:\\prg\\legba.old2\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn\\CodeGeneration.Roslyn.csproj"
+            "D:\\prg\\Legba\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn\\CodeGeneration.Roslyn.csproj": {
+              "projectPath": "D:\\prg\\Legba\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn\\CodeGeneration.Roslyn.csproj"
             },
-            "D:\\prg\\legba.old2\\src\\libs\\GenCore\\GenCore.csproj": {
-              "projectPath": "D:\\prg\\legba.old2\\src\\libs\\GenCore\\GenCore.csproj"
+            "D:\\prg\\Legba\\src\\libs\\GenCore\\GenCore.csproj": {
+              "projectPath": "D:\\prg\\Legba\\src\\libs\\GenCore\\GenCore.csproj"
             },
-            "D:\\prg\\legba.old2\\src\\libs\\NetCore\\NetCore.csproj": {
-              "projectPath": "D:\\prg\\legba.old2\\src\\libs\\NetCore\\NetCore.csproj"
+            "D:\\prg\\Legba\\src\\libs\\NetCore\\NetCore.csproj": {
+              "projectPath": "D:\\prg\\Legba\\src\\libs\\NetCore\\NetCore.csproj"
             }
           }
         }

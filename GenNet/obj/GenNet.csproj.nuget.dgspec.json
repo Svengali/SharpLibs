@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\prg\\legba.old2\\src\\libs\\GenNet\\GenNet.csproj": {}
+    "D:\\prg\\Legba\\src\\libs\\GenNet\\GenNet.csproj": {}
   },
   "projects": {
-    "D:\\prg\\legba.old2\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn.Attributes\\CodeGeneration.Roslyn.Attributes.csproj": {
+    "D:\\prg\\Legba\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn.Attributes\\CodeGeneration.Roslyn.Attributes.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\prg\\legba.old2\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn.Attributes\\CodeGeneration.Roslyn.Attributes.csproj",
+        "projectUniqueName": "D:\\prg\\Legba\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn.Attributes\\CodeGeneration.Roslyn.Attributes.csproj",
         "projectName": "CodeGeneration.Roslyn.Attributes",
-        "projectPath": "D:\\prg\\legba.old2\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn.Attributes\\CodeGeneration.Roslyn.Attributes.csproj",
+        "projectPath": "D:\\prg\\Legba\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn.Attributes\\CodeGeneration.Roslyn.Attributes.csproj",
         "packagesPath": "C:\\Users\\marcs\\.nuget\\packages\\",
-        "outputPath": "D:\\prg\\legba.old2\\src\\libs\\CodeGeneration.Roslyn\\obj\\CodeGeneration.Roslyn.Attributes\\",
+        "outputPath": "D:\\prg\\Legba\\src\\libs\\CodeGeneration.Roslyn\\obj\\CodeGeneration.Roslyn.Attributes\\",
         "projectStyle": "PackageReference",
         "crossTargeting": true,
         "fallbackFolders": [
@@ -19,7 +19,6 @@
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "D:\\prg\\legba.old2\\src\\NuGet.Config",
           "C:\\Users\\marcs\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
@@ -142,21 +141,20 @@
         }
       }
     },
-    "D:\\prg\\legba.old2\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn\\CodeGeneration.Roslyn.csproj": {
+    "D:\\prg\\Legba\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn\\CodeGeneration.Roslyn.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\prg\\legba.old2\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn\\CodeGeneration.Roslyn.csproj",
+        "projectUniqueName": "D:\\prg\\Legba\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn\\CodeGeneration.Roslyn.csproj",
         "projectName": "CodeGeneration.Roslyn",
-        "projectPath": "D:\\prg\\legba.old2\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn\\CodeGeneration.Roslyn.csproj",
+        "projectPath": "D:\\prg\\Legba\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn\\CodeGeneration.Roslyn.csproj",
         "packagesPath": "C:\\Users\\marcs\\.nuget\\packages\\",
-        "outputPath": "D:\\prg\\legba.old2\\src\\libs\\CodeGeneration.Roslyn\\obj\\CodeGeneration.Roslyn\\",
+        "outputPath": "D:\\prg\\Legba\\src\\libs\\CodeGeneration.Roslyn\\obj\\CodeGeneration.Roslyn\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "D:\\prg\\legba.old2\\src\\NuGet.Config",
           "C:\\Users\\marcs\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
@@ -171,8 +169,8 @@
         "frameworks": {
           "netstandard1.6": {
             "projectReferences": {
-              "D:\\prg\\legba.old2\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn.Attributes\\CodeGeneration.Roslyn.Attributes.csproj": {
-                "projectPath": "D:\\prg\\legba.old2\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn.Attributes\\CodeGeneration.Roslyn.Attributes.csproj"
+              "D:\\prg\\Legba\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn.Attributes\\CodeGeneration.Roslyn.Attributes.csproj": {
+                "projectPath": "D:\\prg\\Legba\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn.Attributes\\CodeGeneration.Roslyn.Attributes.csproj"
               }
             }
           }
@@ -211,21 +209,20 @@
         }
       }
     },
-    "D:\\prg\\legba.old2\\src\\libs\\GenCore\\GenCore.csproj": {
+    "D:\\prg\\Legba\\src\\libs\\GenCore\\GenCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\prg\\legba.old2\\src\\libs\\GenCore\\GenCore.csproj",
+        "projectUniqueName": "D:\\prg\\Legba\\src\\libs\\GenCore\\GenCore.csproj",
         "projectName": "GenCore",
-        "projectPath": "D:\\prg\\legba.old2\\src\\libs\\GenCore\\GenCore.csproj",
+        "projectPath": "D:\\prg\\Legba\\src\\libs\\GenCore\\GenCore.csproj",
         "packagesPath": "C:\\Users\\marcs\\.nuget\\packages\\",
-        "outputPath": "D:\\prg\\legba.old2\\src\\libs\\GenCore\\obj\\",
+        "outputPath": "D:\\prg\\Legba\\src\\libs\\GenCore\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "D:\\prg\\legba.old2\\src\\NuGet.Config",
           "C:\\Users\\marcs\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
@@ -284,21 +281,20 @@
         }
       }
     },
-    "D:\\prg\\legba.old2\\src\\libs\\GenNet\\GenNet.csproj": {
+    "D:\\prg\\Legba\\src\\libs\\GenNet\\GenNet.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\prg\\legba.old2\\src\\libs\\GenNet\\GenNet.csproj",
+        "projectUniqueName": "D:\\prg\\Legba\\src\\libs\\GenNet\\GenNet.csproj",
         "projectName": "GenNet",
-        "projectPath": "D:\\prg\\legba.old2\\src\\libs\\GenNet\\GenNet.csproj",
+        "projectPath": "D:\\prg\\Legba\\src\\libs\\GenNet\\GenNet.csproj",
         "packagesPath": "C:\\Users\\marcs\\.nuget\\packages\\",
-        "outputPath": "D:\\prg\\legba.old2\\src\\libs\\GenNet\\obj\\",
+        "outputPath": "D:\\prg\\Legba\\src\\libs\\GenNet\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "D:\\prg\\legba.old2\\src\\NuGet.Config",
           "C:\\Users\\marcs\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
@@ -313,17 +309,17 @@
         "frameworks": {
           "netstandard2.0": {
             "projectReferences": {
-              "D:\\prg\\legba.old2\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn.Attributes\\CodeGeneration.Roslyn.Attributes.csproj": {
-                "projectPath": "D:\\prg\\legba.old2\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn.Attributes\\CodeGeneration.Roslyn.Attributes.csproj"
+              "D:\\prg\\Legba\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn.Attributes\\CodeGeneration.Roslyn.Attributes.csproj": {
+                "projectPath": "D:\\prg\\Legba\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn.Attributes\\CodeGeneration.Roslyn.Attributes.csproj"
               },
-              "D:\\prg\\legba.old2\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn\\CodeGeneration.Roslyn.csproj": {
-                "projectPath": "D:\\prg\\legba.old2\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn\\CodeGeneration.Roslyn.csproj"
+              "D:\\prg\\Legba\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn\\CodeGeneration.Roslyn.csproj": {
+                "projectPath": "D:\\prg\\Legba\\src\\libs\\CodeGeneration.Roslyn\\src\\CodeGeneration.Roslyn\\CodeGeneration.Roslyn.csproj"
               },
-              "D:\\prg\\legba.old2\\src\\libs\\GenCore\\GenCore.csproj": {
-                "projectPath": "D:\\prg\\legba.old2\\src\\libs\\GenCore\\GenCore.csproj"
+              "D:\\prg\\Legba\\src\\libs\\GenCore\\GenCore.csproj": {
+                "projectPath": "D:\\prg\\Legba\\src\\libs\\GenCore\\GenCore.csproj"
               },
-              "D:\\prg\\legba.old2\\src\\libs\\NetCore\\NetCore.csproj": {
-                "projectPath": "D:\\prg\\legba.old2\\src\\libs\\NetCore\\NetCore.csproj"
+              "D:\\prg\\Legba\\src\\libs\\NetCore\\NetCore.csproj": {
+                "projectPath": "D:\\prg\\Legba\\src\\libs\\NetCore\\NetCore.csproj"
               }
             }
           }
@@ -362,14 +358,14 @@
         }
       }
     },
-    "D:\\prg\\legba.old2\\src\\libs\\NetCore\\NetCore.csproj": {
+    "D:\\prg\\Legba\\src\\libs\\NetCore\\NetCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\prg\\legba.old2\\src\\libs\\NetCore\\NetCore.csproj",
+        "projectUniqueName": "D:\\prg\\Legba\\src\\libs\\NetCore\\NetCore.csproj",
         "projectName": "NetCore",
-        "projectPath": "D:\\prg\\legba.old2\\src\\libs\\NetCore\\NetCore.csproj",
+        "projectPath": "D:\\prg\\Legba\\src\\libs\\NetCore\\NetCore.csproj",
         "packagesPath": "C:\\Users\\marcs\\.nuget\\packages\\",
-        "outputPath": "D:\\prg\\legba.old2\\src\\libs\\NetCore\\obj\\",
+        "outputPath": "D:\\prg\\Legba\\src\\libs\\NetCore\\obj\\",
         "projectStyle": "PackageReference",
         "crossTargeting": true,
         "fallbackFolders": [
@@ -377,7 +373,6 @@
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "D:\\prg\\legba.old2\\src\\NuGet.Config",
           "C:\\Users\\marcs\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
@@ -394,22 +389,22 @@
         "frameworks": {
           "netcoreapp2.0": {
             "projectReferences": {
-              "D:\\prg\\legba.old2\\src\\libs\\SharpLib\\SharpLib.csproj": {
-                "projectPath": "D:\\prg\\legba.old2\\src\\libs\\SharpLib\\SharpLib.csproj"
+              "D:\\prg\\Legba\\src\\libs\\SharpLib\\SharpLib.csproj": {
+                "projectPath": "D:\\prg\\Legba\\src\\libs\\SharpLib\\SharpLib.csproj"
               }
             }
           },
           "net462": {
             "projectReferences": {
-              "D:\\prg\\legba.old2\\src\\libs\\SharpLib\\SharpLib.csproj": {
-                "projectPath": "D:\\prg\\legba.old2\\src\\libs\\SharpLib\\SharpLib.csproj"
+              "D:\\prg\\Legba\\src\\libs\\SharpLib\\SharpLib.csproj": {
+                "projectPath": "D:\\prg\\Legba\\src\\libs\\SharpLib\\SharpLib.csproj"
               }
             }
           },
           "netstandard2.0": {
             "projectReferences": {
-              "D:\\prg\\legba.old2\\src\\libs\\SharpLib\\SharpLib.csproj": {
-                "projectPath": "D:\\prg\\legba.old2\\src\\libs\\SharpLib\\SharpLib.csproj"
+              "D:\\prg\\Legba\\src\\libs\\SharpLib\\SharpLib.csproj": {
+                "projectPath": "D:\\prg\\Legba\\src\\libs\\SharpLib\\SharpLib.csproj"
               }
             }
           }
@@ -494,14 +489,14 @@
         }
       }
     },
-    "D:\\prg\\legba.old2\\src\\libs\\SharpLib\\SharpLib.csproj": {
+    "D:\\prg\\Legba\\src\\libs\\SharpLib\\SharpLib.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\prg\\legba.old2\\src\\libs\\SharpLib\\SharpLib.csproj",
+        "projectUniqueName": "D:\\prg\\Legba\\src\\libs\\SharpLib\\SharpLib.csproj",
         "projectName": "SharpLib",
-        "projectPath": "D:\\prg\\legba.old2\\src\\libs\\SharpLib\\SharpLib.csproj",
+        "projectPath": "D:\\prg\\Legba\\src\\libs\\SharpLib\\SharpLib.csproj",
         "packagesPath": "C:\\Users\\marcs\\.nuget\\packages\\",
-        "outputPath": "D:\\prg\\legba.old2\\src\\libs\\SharpLib\\obj\\",
+        "outputPath": "D:\\prg\\Legba\\src\\libs\\SharpLib\\obj\\",
         "projectStyle": "PackageReference",
         "crossTargeting": true,
         "fallbackFolders": [
@@ -509,7 +504,6 @@
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "D:\\prg\\legba.old2\\src\\NuGet.Config",
           "C:\\Users\\marcs\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"

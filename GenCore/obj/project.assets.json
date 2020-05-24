@@ -5654,18 +5654,17 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\prg\\legba.old2\\src\\libs\\GenCore\\GenCore.csproj",
+      "projectUniqueName": "D:\\prg\\Legba\\src\\libs\\GenCore\\GenCore.csproj",
       "projectName": "GenCore",
-      "projectPath": "D:\\prg\\legba.old2\\src\\libs\\GenCore\\GenCore.csproj",
+      "projectPath": "D:\\prg\\Legba\\src\\libs\\GenCore\\GenCore.csproj",
       "packagesPath": "C:\\Users\\marcs\\.nuget\\packages\\",
-      "outputPath": "D:\\prg\\legba.old2\\src\\libs\\GenCore\\obj\\",
+      "outputPath": "D:\\prg\\Legba\\src\\libs\\GenCore\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "D:\\prg\\legba.old2\\src\\NuGet.Config",
         "C:\\Users\\marcs\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"

@@ -1,9 +1,0 @@
-C:\prg\legba\src\libs\GenCore\bin\x64\Debug\netstandard2.0\GenCore.deps.json
-C:\prg\legba\src\libs\GenCore\bin\x64\Debug\netstandard2.0\GenCore.dll
-C:\prg\legba\src\libs\GenCore\bin\x64\Debug\netstandard2.0\GenCore.pdb
-C:\prg\legba\src\libs\GenCore\obj\x64\Debug\netstandard2.0\GenCore.csprojAssemblyReference.cache
-C:\prg\legba\src\libs\GenCore\obj\x64\Debug\netstandard2.0\GenCore.csproj.CoreCompileInputs.cache
-C:\prg\legba\src\libs\GenCore\obj\x64\Debug\netstandard2.0\GenCore.AssemblyInfoInputs.cache
-C:\prg\legba\src\libs\GenCore\obj\x64\Debug\netstandard2.0\GenCore.AssemblyInfo.cs
-C:\prg\legba\src\libs\GenCore\obj\x64\Debug\netstandard2.0\GenCore.dll
-C:\prg\legba\src\libs\GenCore\obj\x64\Debug\netstandard2.0\GenCore.pdb

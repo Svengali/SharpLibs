@@ -11,11 +11,6 @@ using System.Runtime.Serialization;
 namespace net
 {
 
-	public interface I_Savable
-	{
-		string savename();
-	}
-
 
 	public class Conn<T, TInst> : lib.Conn<T, TInst> where T : IFormatter, new()
 	                                                 where TInst : lib.ISerDes<T>, new()
@@ -38,7 +33,7 @@ namespace net
 			thread.Start();
 		}
 
-		private byte[] mm_recvBuf = new byte[ 2048 ];
+		private byte[] mm_recvBuf = new byte[ BufferSize ];
 
 		private void recieveLoop()
 		{
@@ -60,7 +55,7 @@ namespace net
 
 					//log.info( "Len {0} needed to read", len );
 
-					var memStream = new MemoryStream( 1024 );
+					var memStream = new MemoryStream( BufferSize );
 
 					while( totalAmountRead < len )
 					{
@@ -75,7 +70,7 @@ namespace net
 						totalAmountRead += amountRead;
 
 						//*
-						var debugMemStream = new MemoryStream( 1024 );
+						var debugMemStream = new MemoryStream( BufferSize );
 						debugMemStream.Write( mm_recvBuf, 0, (int)amountRead );
 						debugMemStream.Position = 0;
 
@@ -134,7 +129,7 @@ namespace net
 		{
 			while( m_loop )
 			{
-				mm_recvRes = Stream.BeginRead( mm_recvBuf, 0, 1024, new AsyncCallback( asyncRecv ), null );
+				mm_recvRes = Stream.BeginRead( mm_recvBuf, 0, BufferSize, new AsyncCallback( asyncRecv ), null );
 				mm_recvWait.WaitOne();
 			}
 		}
@@ -164,7 +159,7 @@ namespace net
 				mm_recvBuf[packetSize] = 0;
 
 				//TODO: Make a proper 'MemoryStream'
-				var recv = new MemoryStream( 1024 );
+				var recv = new MemoryStream( BufferSize );
 				recv.Write( mm_recvBuf, 0, packetSize );
 				recv.Position = 0;
 

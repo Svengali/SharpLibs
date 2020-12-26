@@ -9,6 +9,7 @@ using System.Text;
 namespace msg
 {
 
+/*
 	#region HandlerSpecs
 	public interface HandleMgr
 	{
@@ -55,7 +56,7 @@ namespace msg
 	public class Begin : Entity
 	{
 	}
-	*/
+	* /
 
 	
 	public class Loaded : Msg
@@ -146,10 +147,10 @@ namespace msg
 	public class EntLoaded : Entity, HandleMgr
 	{
 	}
-	*/
+	* /
 	#endregion
 
-
+	*/
 
 
 

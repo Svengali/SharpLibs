@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>d</RootNamespace>
+		<GenerateCodeFromAttributesToolPathOverride>..\CodeGeneration.Roslyn\bin\CodeGeneration.Roslyn.Tool\$(Configuration)\netcoreapp2.0\dotnet-codegen.dll</GenerateCodeFromAttributesToolPathOverride>
+	</PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CodeGeneration.Roslyn\src\CodeGeneration.Roslyn.Engine\CodeGeneration.Roslyn.Engine.csproj" />
+    <ProjectReference Include="..\CodeGeneration.Roslyn\src\CodeGeneration.Roslyn.Tasks\CodeGeneration.Roslyn.Tasks.csproj" />
+    <ProjectReference Include="..\CodeGeneration.Roslyn\src\CodeGeneration.Roslyn.Tool\CodeGeneration.Roslyn.Tool.csproj" />
+    <ProjectReference Include="..\GenCore\GenCore.csproj" />
+    <ProjectReference Include="..\GenNet\GenNet.csproj" />
+    <ProjectReference Include="..\NetCore\NetCore.csproj" />
+    <ProjectReference Include="..\SharpLib\SharpLib.csproj" />
+  </ItemGroup>
+
+	<Import Project="..\CodeGeneration.Roslyn\src\CodeGeneration.Roslyn.Tasks\build\CodeGeneration.Roslyn.BuildTime.targets" />
+
+	<ItemGroup>
+    <Compile Update="ent\GenEntity.cs">
+      <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
+    </Compile>
+    <Compile Update="GenEntity.cs">
+      <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
+    </Compile>
+  </ItemGroup>
+
+</Project>

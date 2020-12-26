@@ -71,7 +71,7 @@ namespace gen
 
 			if( m_class != null )
 			{
-				var fieldsComment = "";
+				var fieldsComment = "version: 1\n";
 
 				foreach( var member in m_class.Members )
 				{
@@ -404,7 +404,7 @@ namespace gen
 
 			var constructorParams = $"{version}";
 
-			var first = true;
+			//var first = true;
 			foreach( var f in m_fields )
 			{
 				//if( !first )

@@ -13,17 +13,8 @@ namespace svc
 
 
 
-	public struct MachineInfo
-	{
-		public readonly string ip;
-		public readonly ushort port;
-
-	}
-
 	public class MachineCfg : lib.Config
 	{
-		public readonly ImmutableArray<MachineInfo> machines = ImmutableArray<MachineInfo>.Empty;
-		public readonly MachineInfo listen;
 	}
 
 	public class Machine : ServiceWithConfig<MachineCfg>, svc.ISourceRun
@@ -38,8 +29,8 @@ namespace svc
 
 			
 
-			var ready = new msg.Ready { address = s_mgr.AddressAll(), source = id };
-			s_mgr.send_fromService( ready );
+			//var ready = new msg.Ready { /*address = s_mgr.AddressAll(),*/ source = id };
+			//s_mgr.send_fromService( ready );
 		}
 
 		public void run()

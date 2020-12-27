@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,62 +9,71 @@ namespace msg
 {
 
 	#region Core
-	public interface IMsg<TSource, TMsg> where TSource : class, svc.ISource<TSource, TMsg>
+	public interface IMsg<TSource, TMsg>
+		where TSource : class, ISource<TSource, TMsg>
+		where TMsg : msg.IMsg<TSource, TMsg>
 	{
-		Address<TSource, TMsg> address { get; }
 	}
 
 
 
 	public class Msg : IMsg<svc.Service<Msg>, Msg>
 	{
-		public Address<Service<Msg>, Msg> address { get; set; }
 	}
 
 	public struct Answer<TSource, TMsg>
 	{
-		public readonly TSource source;
-		public readonly TMsg msg;
+		public readonly RTAddress From;
+		public readonly TMsg Msg;
 
-		public Answer( TSource _source, TMsg _msg )
+		public Answer( RTAddress from, TMsg msg )
 		{
-			source = _source;
-			msg = _msg;
+			From = from;
+			Msg = msg;
 		}
 	}
 
-	public struct MsgContext<TSource, TMsg> where TSource : class, svc.ISource<TSource, TMsg>
+	public struct MsgContext<TSource, TMsg>
+		where TSource : class, ISource<TSource, TMsg>
+		where TMsg : msg.IMsg<TSource, TMsg>
 	{
 		//using TAnswer = Answer<TSource, TMsg>;
 
-		public TMsg m;
+		public RTAddress From;
+		public TMsg Msg;
+
+		public Func<TSource, bool> Fn;
+
 		//This allows our asker to wait until the other service has returned an answer
-		public EventWaitHandle wait;
-		public Answer<TSource, TMsg> response;
-		public List<Task<Answer<TSource, TMsg>>> task;
+		public EventWaitHandle Wait;
+		public Answer<TSource, TMsg> Response;
+		//public List<Task<Answer<TSource, TMsg>>> task;
 
-		static public MsgContext<TSource, TMsg> msg( TMsg _msg )
+		static public MsgContext<TSource, TMsg> send( RTAddress from, TMsg msg, Func<TSource, bool> fn )
 		{
-			return new MsgContext<TSource, TMsg>( _msg, false );
+			return new MsgContext<TSource, TMsg>( from, msg, fn, false );
 		}
 
-		static public MsgContext<TSource, TMsg> ask( TMsg _msg )
+		static public MsgContext<TSource, TMsg> ask( RTAddress from, TMsg msg, Func<TSource, bool> fn )
 		{
-			return new MsgContext<TSource, TMsg>( _msg, true );
+			return new MsgContext<TSource, TMsg>( from, msg, fn, true );
 		}
 
-		public MsgContext( TMsg _msg, bool isAsk )
+		public MsgContext( RTAddress from, TMsg msg, Func<TSource, bool> fn, bool isAsk )
 		{
-			m = _msg;
-			wait = isAsk ? new EventWaitHandle( false, EventResetMode.AutoReset ) : null;
-			response = default;
-			task = new List<Task<Answer<TSource, TMsg>>>();
+			From = from;
+			Msg = msg;
+			Fn = fn;
+			Wait = isAsk ? new EventWaitHandle( false, EventResetMode.AutoReset ) : null;
+			Response = default;
+			//task = new List<Task<Answer<TSource, TMsg>>>();
 		}
 	}
 	#endregion //Core
 
 	#region Address
 
+	/*
 	public class Address<TSource, TMsg> where TSource : class, svc.ISource<TSource, TMsg>
 	{
 		virtual public bool pass( TSource svc )
@@ -165,7 +175,7 @@ namespace msg
 
 		private List<TSource> m_svcs = new List<TSource>( 8 );
 	}
-
+	*/
 	#endregion
 
 
@@ -183,7 +193,9 @@ namespace msg
 
 
 
-	public class Server<TSource, TMsg> : msg.Msg, IMsg<TSource, TMsg> where TSource : class, svc.ISource<TSource, TMsg>
+	public class Server<TSource, TMsg> : msg.Msg, IMsg<TSource, TMsg>
+		where TSource : class, ISource<TSource, TMsg>
+		where TMsg : msg.IMsg<TSource, TMsg>
 	{
 		/*
 		public svc.Ref<svc.Service> sender { get; private set; }
@@ -213,7 +225,7 @@ namespace msg
 
 		}
 		*/
-		Address<TSource, TMsg> IMsg<TSource, TMsg>.address { get; }
+		//Address<TSource, TMsg> IMsg<TSource, TMsg>.address { get; }
 	}
 
 

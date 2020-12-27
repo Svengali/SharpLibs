@@ -16,19 +16,62 @@ namespace svc
 
 	public enum SourceId : ulong
 	{
-		Invalid = 0,
+		Invalid	= 0,
+		Local		= 1,
+		Start		= 1024,
+	}
+
+	//Runtime service addresses.  Dont bother storing these.
+	public struct RTAddress : IEquatable<RTAddress>
+	{
+		public readonly SourceId Mgr;
+		public readonly SourceId Source;
+
+		public RTAddress( SourceId mgr, SourceId source )
+		{
+			Mgr = mgr;
+			Source = source;
+		}
+
+		public override bool Equals( object obj )
+		{
+			return obj is RTAddress address && Equals( address );
+		}
+
+		public bool Equals( RTAddress other )
+		{
+			return Mgr == other.Mgr &&
+							 Source == other.Source;
+		}
+
+		public override int GetHashCode()
+		{
+			return HashCode.Combine( Mgr, Source );
+		}
+
+		public static bool operator ==( RTAddress left, RTAddress right )
+		{
+			return left.Equals( right );
+		}
+
+		public static bool operator !=( RTAddress left, RTAddress right )
+		{
+			return !( left == right );
+		}
 	}
 
 
 
 	public interface ISource<TSource, TMsg>
+		where TSource : class, ISource<TSource, TMsg>
+		where TMsg : msg.IMsg<TSource, TMsg>
 	{
 
 		SourceId id { get; }
 
-		void deliver( TMsg msg );
+		void deliver( RTAddress from, msg.MsgContext<TSource, TMsg> ctx );
 
-		Task<msg.Answer<TSource, TMsg>> deliverAsk( TMsg msg );
+		Task<msg.Answer<TSource, TMsg>> deliverAsk( RTAddress from, msg.MsgContext<TSource, TMsg> ctx );
 	}
 
 	public interface ISourceRun
@@ -71,11 +114,11 @@ namespace svc
 				msg.MsgContext<TSource, TMsg> ctx;
 				m_q.TryDequeue( out ctx );
 
-				if( ctx.m != null )
+				if( ctx.Msg != null )
 				{
-					if( ctx.wait == null )
+					if( ctx.Wait == null )
 					{
-						args[0] = ctx.m.GetType();
+						args[0] = ctx.Msg.GetType();
 						Action<TMsg> fn = null;
 
 						if( !m_handlingMethod.TryGetValue( args[0], out fn ) )
@@ -103,23 +146,23 @@ namespace svc
 							{
 								//mm_params[ 0 ] = c.msg;
 
-								fn( ctx.m );
+								fn( ctx.Msg );
 
 								//mi.Invoke( this, mm_params );
 							}
 							catch( Exception e )
 							{
-								lib.Log.error( $"Exception while calling { ctx.m.GetType()}.  {e}" );
+								lib.Log.error( $"Exception while calling { ctx.Msg.GetType()}.  {e}" );
 							}
 						}
 						else
 						{
-							unhandled( ctx.m );
+							unhandled( ctx.Msg );
 						}
 					}
 					else
 					{
-						args[0] = ctx.m.GetType();
+						args[0] = ctx.Msg.GetType();
 
 						Func<TMsg, object> fn;
 
@@ -149,24 +192,24 @@ namespace svc
 						{
 							try
 							{
-								object resp = fn( ctx.m );
+								object resp = fn( ctx.Msg );
 
 								TSource svc = source();
 
-								ctx.response = new msg.Answer<TSource, TMsg>( svc, (TMsg)resp );
+								ctx.Response = new msg.Answer<TSource, TMsg>( ctx.From, (TMsg)resp );
 
-								ctx.wait.Set();
+								ctx.Wait.Set();
 
 								//retEWH(c.wait);
 							}
 							catch( Exception ex )
 							{
-								lib.Log.warn( $"Exception while calling {ctx.m.GetType()}.  Ex {ex}" );
+								lib.Log.warn( $"Exception while calling {ctx.Msg.GetType()}.  Ex {ex}" );
 							}
 						}
 						else
 						{
-							unhandled( ctx.m );
+							unhandled( ctx.Msg );
 						}
 
 						//time.Stop();
@@ -257,7 +300,7 @@ namespace svc
 		//public ImmutableList<Type> Services { get; private set; }
 
 
-		public Service(  )
+		public Service()
 		{
 			//id = _id;
 
@@ -315,37 +358,42 @@ namespace svc
 		{
 			//msg.setSender_fromService( this );
 			//msg.setCaller_fromService( callerFilePath, callerMemberName, callerLineNumber );
-			s_mgr.send_fromService( msg );
+			s_mgr.send_fromService( new RTAddress(s_mgr.Id, id), msg );
 		}
 
 		public Task<msg.Answer<Service<TMsg>, TMsg>[]> ask( TMsg msg, [CallerFilePath] string callerFilePath = "", [CallerMemberName] string callerMemberName = "", [CallerLineNumber] int callerLineNumber = 0 )
 		{
 			//msg.setSender_fromService( this );
 			//msg.setCaller_fromService( callerFilePath, callerMemberName, callerLineNumber );
-			return s_mgr.ask_fromService( msg );
+			return s_mgr.ask_fromService( new RTAddress( s_mgr.Id, id ), msg );
 		}
 
 
-		public void deliver( TMsg m )
+		public void deliver( RTAddress from, msg.MsgContext<Service<TMsg>, TMsg> ctx )
 		{
-			msg.MsgContext<Service<TMsg>, TMsg> c = msg.MsgContext<Service<TMsg>, TMsg>.msg( m );
-			m_q.Enqueue( c );
+			m_q.Enqueue( ctx );
 			m_event.Set();
 		}
 
-		public Task<msg.Answer<Service<TMsg>, TMsg>> deliverAsk( TMsg m )
+		public Task<Answer<Service<TMsg>, TMsg>> deliverAsk( RTAddress from, msg.MsgContext<Service<TMsg>, TMsg> ctx )
 		{
-			msg.MsgContext<Service<TMsg>, TMsg> c = msg.MsgContext<Service<TMsg>, TMsg>.ask( m );
-			m_q.Enqueue( c );
+			throw new NotImplementedException();
+		}
+
+		/*
+		public Task<msg.Answer<Service<TMsg>, TMsg>> deliverAsk( TMsg msg )
+		{
+			msg.MsgContext<Service<TMsg>, TMsg> ctx = global::msg.MsgContext<Service<TMsg>, TMsg>.ask( msg );
+			m_q.Enqueue( ctx );
 
 
-			var a = new Func<msg.Answer<Service<TMsg>, TMsg>>(() =>
+			var answer = new Func<msg.Answer<Service<TMsg>, TMsg>>(() =>
 			{
-				c.wait.WaitOne();
-				return c.response;
+				ctx.wait.WaitOne();
+				return ctx.response;
 			});
 
-			var t = new Task<msg.Answer<Service<TMsg>, TMsg>>(a, TaskCreationOptions.LongRunning);
+			var t = new Task<msg.Answer<Service<TMsg>, TMsg>>(answer);
 			t.Start();
 
 			return t;
@@ -360,6 +408,8 @@ namespace svc
 		{
 			throw new NotImplementedException();
 		}
+		*/
+
 
 		//delegate void fnHandleGeneric<T>( TMsg msg, Action<T> fn ) where T : class;
 

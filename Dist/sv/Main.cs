@@ -434,7 +434,10 @@ namespace sv
 
 			clock = new lib.Clock( 0 );
 
-			m_svcMgr = new svc.Mgr<svc.Service<msg.Msg>, msg.Msg>();
+			m_mgrCfg = res.Mgr.lookup<svc.MgrCfg>( configPath );
+
+
+			m_svcMgr = new svc.Mgr<svc.Service<msg.Msg>, msg.Msg>( m_mgrCfg, svc.SourceId.Local );
 			svc.Base<svc.Service<msg.Msg>, msg.Msg>.setMgr(m_svcMgr);
 
 			//Load configs
@@ -580,7 +583,7 @@ namespace sv
 		{
 			clock.tick();
 
-			m_svcMgr.procMsg_block( 1000 );
+			m_svcMgr.processMessagesBlock( 1000 );
 
 			//m_backend.Touch("test");
 
@@ -588,6 +591,7 @@ namespace sv
 
 
 		res.Ref<ServerCfg> m_cfg;
+		res.Ref<svc.MgrCfg> m_mgrCfg;
 
 		svc.Mgr<svc.Service<msg.Msg>, msg.Msg> m_svcMgr;
 

@@ -9,150 +9,188 @@ using System.Threading.Tasks;
 using Imm = System.Collections.Immutable.ImmutableInterlocked;
 
 using msg;
+using res;
+using System.Diagnostics;
 
 namespace svc
 {
+
+	public struct MachineInfo
+	{
+		public readonly string ip;
+		public readonly ushort port;
+
+	}
+
+
+	public class MgrCfg : lib.Config
+	{
+		public readonly ImmutableArray<MachineInfo> machines = ImmutableArray<MachineInfo>.Empty;
+		public readonly MachineInfo listen;
+	}
+
+
 	public class Mgr<TSource, TMsg>
 		where TSource : class, ISource<TSource, TMsg>
 		where TMsg : msg.IMsg<TSource, TMsg>
 	{
 
-		public msg.AddressAll<TSource, TMsg> AddressAll()
+		public Mgr( res.Ref<MgrCfg> _cfg, SourceId id )
 		{
-			return new AddressAll<TSource, TMsg>();
+			Id = id;
+			Cfg = _cfg;
 		}
-
-
 
 		public void start( TSource svc )
 		{
 			m_pendingService.Enqueue( svc );
 		}
 
-		public void send_fromService( TMsg msg )
+
+		/*
+		public msg.AddressAll<TSource, TMsg> AddressAll()
 		{
-			/*
-			var c = new msg.MsgContext<TSource, TMsg>();
-			c.msg = msg;
-			m_q.Enqueue( c );
+			return new AddressAll<TSource, TMsg>();
+		}
+		*/
+
+		public void send_fromService( RTAddress from, TMsg msg )
+		{
+			var ctx = new msg.MsgContext<TSource, TMsg>();
+			ctx.Msg = msg;
+			m_q.Enqueue( ctx );
 			m_wait.Set();
+		}
+
+		public Task<msg.Answer<TSource, TMsg>[]> ask_fromService( RTAddress from, TMsg m )
+		{
+			return default;
+		}
+
+			/*
+			public void send_fromService( TMsg msg )
+			{
+				/*
+				var c = new msg.MsgContext<TSource, TMsg>();
+				c.msg = msg;
+				m_q.Enqueue( c );
+				m_wait.Set();
+				* /
+
+				procMsg( msg );
+			}
+
+			public Task<msg.Answer<TSource, TMsg>[]> ask_fromService( TMsg m )
+			{
+
+				var ctx = msg.MsgContext<TSource, TMsg>.ask( m );
+				m_q.Enqueue( ctx );
+				m_wait.Set();
+
+
+
+				var answer = new Func<msg.Answer<TSource, TMsg>[]>(() =>
+				{
+					//var time = new lib.Timer();
+					//time.Start();
+
+					ctx.wait.WaitOne();
+					Task<msg.Answer<TSource, TMsg>>[] tasks = ctx.task.ToArray();
+					Task.WaitAll(tasks);
+
+					var list = new List<msg.Answer<TSource, TMsg>>();
+					for(uint i = 0; i < tasks.Length; ++i)
+					{
+						if(tasks[ i ].Result.source != null)
+						{
+							list.Add(tasks[ i ].Result);
+						}
+					}
+
+					//Answer<TSource, TMsg>[] arr = new Answer<TSource, TMsg>[ tasks.Length ];
+					//for( uint i = 0; i < tasks.Length; ++i )
+					//{
+					//	arr[i] = tasks[i].Result;
+					//}
+
+					//time.Stop();
+					//lib.Log.info( $"{time.DurationMS} to task ask_fromService" );
+
+					return list.ToArray();
+				});
+
+				var task = new Task<msg.Answer<TSource, TMsg>[]>(answer);
+				task.Start();
+
+				return task;
+			}
 			*/
 
-			procMsg( msg );
-		}
-
-		public Task<msg.Answer<TSource, TMsg>[]> ask_fromService( TMsg m )
-		{
-
-			var c = msg.MsgContext<TSource, TMsg>.ask( m );
-			m_q.Enqueue( c );
-			m_wait.Set();
-
-
-
-			var a = new Func<msg.Answer<TSource, TMsg>[]>(() =>
-			{
-				//var time = new lib.Timer();
-				//time.Start();
-
-				c.wait.WaitOne();
-				Task<msg.Answer<TSource, TMsg>>[] tasks = c.task.ToArray();
-				Task.WaitAll(tasks);
-
-				var list = new List<msg.Answer<TSource, TMsg>>();
-				for(uint i = 0; i < tasks.Length; ++i)
-				{
-					if(tasks[ i ].Result.source != null)
-					{
-						list.Add(tasks[ i ].Result);
-					}
-				}
-
-				/*
-				Answer<TSource, TMsg>[] arr = new Answer<TSource, TMsg>[ tasks.Length ];
-				for( uint i = 0; i < tasks.Length; ++i )
-				{
-					arr[i] = tasks[i].Result;
-				}
-				*/
-
-				//time.Stop();
-				//lib.Log.info( $"{time.DurationMS} to task ask_fromService" );
-
-				return list.ToArray();
-			});
-
-			var t = new Task<msg.Answer<TSource, TMsg>[]>(a, TaskCreationOptions.LongRunning);
-			t.Start();
-
-			return t;
-		}
-
-		public void procMsg_block( int maxMS )
+			public void processMessagesBlock( int maxMS )
 		{
 			processMessages();
 			var early = m_wait.WaitOne(maxMS);
 		}
 
-
-		public void procMsg( TMsg msg )
-		{
-
-			var services = m_services;
-
-			foreach( var p in services )
-			{
-				if( msg.address.pass( p.Value ) )
-				{
-					p.Value.deliver( msg );
-				}
-			}
-
-			msg.address.deliver( msg );
-		}
-
 		public void processMessages()
 		{
-			if( m_qMax < m_q.Count )
+			if( m_floatingMax < m_q.Count )
 			{
 				lib.Log.warn( $"TSource Q hit highwater of {m_q.Count} in {GetType()}." );
-				m_qMax = (uint)m_q.Count;
+				m_floatingMax = (uint)m_q.Count;
 			}
 
 			while( m_q.Count > 0 )
 			{
-				msg.MsgContext<TSource, TMsg> c;
-				m_q.TryDequeue( out c );
+				msg.MsgContext<TSource, TMsg> ctx;
+				m_q.TryDequeue( out ctx );
 
-				if( c.m != null )
+				Debug.Assert( ctx.Msg != null );
+
+				foreach( var pair in m_services )
 				{
-					if( c.wait == null )
+					if( ctx.Fn(pair.Value) )
 					{
-						procMsg( c.m );
+						pair.Value.deliver( ctx.From, ctx );
 					}
-					else
+				}
+
+
+					/*
+					if( ctx.msg != null )
 					{
-						foreach( var p in m_services )
+						if( ctx.wait == null )
 						{
-							if( c.m.address.pass( p.Value ) )
-							{
-								var t = p.Value.deliverAsk(c.m);
-								if( t != null )
-									c.task.Add( t );
-							}
+							procMsg( ctx.msg );
 						}
+						else
+						{
+							foreach( var p in m_services )
+							{
+								if( ctx.msg.address.pass( p.Value ) )
+								{
+									var t = p.Value.deliverAsk(ctx.msg);
+									if( t != null )
+										ctx.task.Add( t );
+								}
+							}
 
-						var tf = c.m.address.deliverAsk( c.m );
-						if( tf != null )
-							c.task.Add( tf );
+							var tf = ctx.msg.address.deliverAsk( ctx.msg );
+							if( tf != null )
+								ctx.task.Add( tf );
 
-						c.wait.Set();
-						//c.response = c.task.Result;
+							ctx.wait.Set();
+							//c.response = c.task.Result;
 
+						}
 					}
+
+					*/
 				}
 			}
 
+		private void processPendingServices()
+		{
 			while( !m_pendingService.IsEmpty )
 			{
 				TSource svc = null;
@@ -183,7 +221,7 @@ namespace svc
 
 		/*
 
-		public void save( cm.I_Savable obj )
+		public void testSave( cm.I_Savable obj )
 		{
 			var filename = obj.savename();
 
@@ -205,9 +243,7 @@ namespace svc
 			filestream.Close();
 		}
 
-		*/
-
-		public object load( string filename )
+		public object testLoad( string filename )
 		{
 			var path = "save/" + filename + ".xml";
 
@@ -224,9 +260,16 @@ namespace svc
 
 			return obj;
 		}
+		*/
+
 
 		//private lib.XmlFormatter2 m_formatter = new lib.XmlFormatter2();
 		//private Dictionary<lib.Token, TSource> m_services = new Dictionary<lib.Token, TSource>();
+
+		public SourceId Id { get; }
+
+
+
 		ImmutableDictionary<SourceId, TSource> m_services = ImmutableDictionary<svc.SourceId, TSource>.Empty;
 
 
@@ -234,7 +277,9 @@ namespace svc
 		private ConcurrentQueue<TSource> m_pendingService = new ConcurrentQueue<TSource>();
 		private EventWaitHandle m_wait = new EventWaitHandle( true, EventResetMode.AutoReset );
 
-		private uint m_qMax = 10000;
+		private uint m_floatingMax = 10000;
+
+		public Ref<MgrCfg> Cfg { get; }
 
 		//private ConcurrentDictionary<
 	}

@@ -35,7 +35,13 @@ namespace svc
 
 		public void run()
 		{
-			Thread.Sleep(1000);
+			while( true )
+			{
+				procMsg_block();
+				//Thread.Sleep(1);
+			}
+
+			//Thread.Sleep(1000);
 		}
 
 		/*
@@ -45,23 +51,77 @@ namespace svc
 		}
 		*/
 
+		DateTime m_lastLoggedPing = DateTime.Now;
+		uint m_pingsRecvd = 0;
+
 		void handle( msg.Ping ping )
 		{
+			++m_pingsRecvd;
 
+			var ts = DateTime.Now - m_lastLoggedPing;
+
+			if( ts.TotalSeconds > 1.0 )
+			{
+				lib.Log.debug( $"{id} got {m_pingsRecvd} Pings in {ts.TotalSeconds} seconds" );
+
+				m_lastLoggedPing = DateTime.Now;
+				m_pingsRecvd = 0;
+
+			}
+
+			//lib.Log.debug( $"{id} got Ping from {ping.address}" );
+
+			var address = new RTAddress( s_mgr.Id, id );
+
+			if( address != ping.address && !m_otherServices.Contains(ping.address) )
+			{
+				lib.Log.debug( $"{id} PING adding service {ping.address}" );
+				m_otherServices = m_otherServices.Add( ping.address );
+			}
+
+			sendPing( address );
+		}
+
+
+		void handle( msg.Startup startup )
+		{
+			lib.Log.debug( $"{id} got Startup from" );
+
+			var address = new RTAddress( s_mgr.Id, id );
+			var ready = new msg.Ready{ address = address };
+
+			s_mgr.send_fromService( address, ready, (svc) => {
+				return true;
+			});
 		}
 
 		void handle( msg.Ready ready )
 		{
-			lib.Log.debug( $"{id} got Ready from {ready.source}" );
+			lib.Log.debug( $"{id} got Ready from {ready.address}" );
 
-			if( id != ready.source )
+			var address = new RTAddress( s_mgr.Id, id );
+
+			if( address != ready.address && !m_otherServices.Contains( ready.address ) )
 			{
-				m_otherServices = m_otherServices.Add( ready.source );
+				lib.Log.debug( $"{id} READY adding service {ready.address}" );
+				m_otherServices = m_otherServices.Add( ready.address );
+
+				sendPing( address );
+
 			}
 		}
 
+		private void sendPing( RTAddress address )
+		{
+			var ping = new msg.Ping{ address = address };
 
-		ImmutableList<svc.SourceId> m_otherServices = ImmutableList<svc.SourceId>.Empty;
+			var whichService = m_rand.Next( m_otherServices.Count );
+
+			s_mgr.send_fromService( address, ping, ( svc ) => svc.id == m_otherServices[whichService].Source );
+		}
+
+		Random m_rand = new Random();
+		ImmutableList<svc.RTAddress> m_otherServices = ImmutableList<svc.RTAddress>.Empty;
 
 	}
 

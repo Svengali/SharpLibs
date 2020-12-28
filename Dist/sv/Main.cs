@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
+using svc;
 
 namespace sv
 {
@@ -226,17 +227,20 @@ namespace sv
 	[Serializable]
 	public class ServerCfg : lib.Config
 	{
+		/*
 		public ENodeType node = ENodeType.Leaf;
 		public string name = "Test";
 		public string address = "0.0.0.0";
 		public int    port = 8008;
+		*/
 
 		public res.Ref<svc.MachineCfg> machineCfg;
+		public res.Ref<svc.MgrCfg> mgrCfg;
 
 		public NewService[] services = { new NewService() };
-		public ServiceOnDemand[] servicesOnDemand = { new ServiceOnDemand() };
+		//public ServiceOnDemand[] servicesOnDemand = { new ServiceOnDemand() };
 
-		public RemoteMachine[] machines = { new RemoteMachine() };
+		//public RemoteMachine[] machines = { new RemoteMachine() };
 	}
 
 
@@ -422,6 +426,12 @@ namespace sv
 			lib.Config.startup( "server_config.cfg" );
 
 
+			//Load configs
+			lib.Log.info( $"Loading config {configPath}" );
+			//m_cfg = lib.Config.load<ServerCfg>( configPath );
+			m_cfg = res.Mgr.lookup<ServerCfg>( configPath );
+
+
 			// @@ TODO Move to specific
 			lib.Util.checkAndAddDirectory( "logs" );
 			// save/static and save/dynamic are created when they dont exist in order to create the universe
@@ -434,16 +444,9 @@ namespace sv
 
 			clock = new lib.Clock( 0 );
 
-			m_mgrCfg = res.Mgr.lookup<svc.MgrCfg>( configPath );
+			m_svcMgr = new svc.Mgr<svc.Service<msg.Msg>, msg.Msg>( m_cfg.res.mgrCfg, svc.SourceId.Local );
+			svc.Base<svc.Service<msg.Msg>, msg.Msg>.setMgr( m_svcMgr );
 
-
-			m_svcMgr = new svc.Mgr<svc.Service<msg.Msg>, msg.Msg>( m_mgrCfg, svc.SourceId.Local );
-			svc.Base<svc.Service<msg.Msg>, msg.Msg>.setMgr(m_svcMgr);
-
-			//Load configs
-			lib.Log.info( $"Loading config {configPath}" );
-			//m_cfg = lib.Config.load<ServerCfg>( configPath );
-			m_cfg = res.Mgr.lookup<ServerCfg>( configPath );
 
 
 			//*
@@ -478,6 +481,7 @@ namespace sv
 			var machines = new List<IPEndPoint>(); // new Dictionary<string, IPEndPoint>();
 
 			//machines[machineName] = new IPEndPoint( IPAddress.Any, m_cfg.res.port );
+			/*
 			var localEndPoint = new IPEndPoint( IPAddress.Any, m_cfg.res.port );
 
 
@@ -489,6 +493,7 @@ namespace sv
 
 				machines.Add( new IPEndPoint( IPAddress.Parse( mac.address ), mac.port ) );
 			}
+			*/
 
 			/* Shielded
 			connectToOtherMachines( machineName, localEndPoint, machines );
@@ -514,17 +519,26 @@ namespace sv
 			} );
 			*/
 
-			m_machine = new svc.Machine( m_cfg.res.machineCfg );
 
-			m_machine2 = new svc.Machine( m_cfg.res.machineCfg );
-			m_machine3 = new svc.Machine( m_cfg.res.machineCfg );
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
 
+			var startup = new msg.Startup {};
 
+			var address = new RTAddress( m_svcMgr.Id, m_svcMgr.Id );
 
+			foreach( var mac in m_machines )
+			{
+				m_svcMgr.send_fromService( address, startup, ( svc ) => svc.id == mac.id );
+				m_svcMgr.start( mac );
+			}
 
-			m_svcMgr.start( m_machine );
-			m_svcMgr.start( m_machine2 );
-			m_svcMgr.start( m_machine3 );
 
 			//TODO: Move these into machine startup.
 			tick();
@@ -546,7 +560,7 @@ namespace sv
 				//start.name = s.name;
 
 				m_machine.send( start );
-				*/
+				//*/
 			}
 
 
@@ -575,6 +589,8 @@ namespace sv
 		{
 			while( true )
 			{
+				//Sleeps for a second per tick internally.
+				//Can get interrupted if a message comes in during its sleep.
 				tick();
 			}
 		}
@@ -591,15 +607,10 @@ namespace sv
 
 
 		res.Ref<ServerCfg> m_cfg;
-		res.Ref<svc.MgrCfg> m_mgrCfg;
 
 		svc.Mgr<svc.Service<msg.Msg>, msg.Msg> m_svcMgr;
 
-		svc.Machine m_machine;
-		svc.Machine m_machine2;
-		svc.Machine m_machine3;
-
-
+		ImmutableList<svc.Machine> m_machines = ImmutableList<svc.Machine>.Empty;
 
 
 	}

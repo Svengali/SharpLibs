@@ -35,10 +35,10 @@ namespace svc
 		where TMsg : msg.IMsg<TSource, TMsg>
 	{
 
-		public Mgr( res.Ref<MgrCfg> _cfg, SourceId id )
+		public Mgr( res.Ref<MgrCfg> cfg, SourceId id )
 		{
 			Id = id;
-			Cfg = _cfg;
+			Cfg = cfg;
 		}
 
 		public void start( TSource svc )
@@ -54,80 +54,85 @@ namespace svc
 		}
 		*/
 
-		public void send_fromService( RTAddress from, TMsg msg )
+		public void send_fromService( RTAddress from, TMsg msg, Func<TSource, bool> fn )
 		{
-			var ctx = new msg.MsgContext<TSource, TMsg>();
-			ctx.Msg = msg;
+			var ctx = new msg.MsgContext<TSource, TMsg>( from, msg, fn, false );
 			m_q.Enqueue( ctx );
 			m_wait.Set();
 		}
 
-		public Task<msg.Answer<TSource, TMsg>[]> ask_fromService( RTAddress from, TMsg m )
+		public Task<msg.Answer<TSource, TMsg>[]> ask_fromService( RTAddress from, TMsg msg, Func<TSource, bool> fn )
 		{
-			return default;
+			var ctx = new msg.MsgContext<TSource, TMsg>( from, msg, fn, true );
+			m_q.Enqueue( ctx );
+			m_wait.Set();
+
+			// @@@@ PORT ASK
+			return null;
 		}
 
-			/*
-			public void send_fromService( TMsg msg )
-			{
-				/*
-				var c = new msg.MsgContext<TSource, TMsg>();
-				c.msg = msg;
-				m_q.Enqueue( c );
-				m_wait.Set();
-				* /
-
-				procMsg( msg );
-			}
-
-			public Task<msg.Answer<TSource, TMsg>[]> ask_fromService( TMsg m )
-			{
-
-				var ctx = msg.MsgContext<TSource, TMsg>.ask( m );
-				m_q.Enqueue( ctx );
-				m_wait.Set();
-
-
-
-				var answer = new Func<msg.Answer<TSource, TMsg>[]>(() =>
-				{
-					//var time = new lib.Timer();
-					//time.Start();
-
-					ctx.wait.WaitOne();
-					Task<msg.Answer<TSource, TMsg>>[] tasks = ctx.task.ToArray();
-					Task.WaitAll(tasks);
-
-					var list = new List<msg.Answer<TSource, TMsg>>();
-					for(uint i = 0; i < tasks.Length; ++i)
-					{
-						if(tasks[ i ].Result.source != null)
-						{
-							list.Add(tasks[ i ].Result);
-						}
-					}
-
-					//Answer<TSource, TMsg>[] arr = new Answer<TSource, TMsg>[ tasks.Length ];
-					//for( uint i = 0; i < tasks.Length; ++i )
-					//{
-					//	arr[i] = tasks[i].Result;
-					//}
-
-					//time.Stop();
-					//lib.Log.info( $"{time.DurationMS} to task ask_fromService" );
-
-					return list.ToArray();
-				});
-
-				var task = new Task<msg.Answer<TSource, TMsg>[]>(answer);
-				task.Start();
-
-				return task;
-			}
-			*/
-
-			public void processMessagesBlock( int maxMS )
+		/*
+		public void send_fromService( TMsg msg )
 		{
+			/*
+			var c = new msg.MsgContext<TSource, TMsg>();
+			c.msg = msg;
+			m_q.Enqueue( c );
+			m_wait.Set();
+			* /
+
+			procMsg( msg );
+		}
+
+		public Task<msg.Answer<TSource, TMsg>[]> ask_fromService( TMsg m )
+		{
+
+			var ctx = msg.MsgContext<TSource, TMsg>.ask( m );
+			m_q.Enqueue( ctx );
+			m_wait.Set();
+
+
+
+			var answer = new Func<msg.Answer<TSource, TMsg>[]>(() =>
+			{
+				//var time = new lib.Timer();
+				//time.Start();
+
+				ctx.wait.WaitOne();
+				Task<msg.Answer<TSource, TMsg>>[] tasks = ctx.task.ToArray();
+				Task.WaitAll(tasks);
+
+				var list = new List<msg.Answer<TSource, TMsg>>();
+				for(uint i = 0; i < tasks.Length; ++i)
+				{
+					if(tasks[ i ].Result.source != null)
+					{
+						list.Add(tasks[ i ].Result);
+					}
+				}
+
+				//Answer<TSource, TMsg>[] arr = new Answer<TSource, TMsg>[ tasks.Length ];
+				//for( uint i = 0; i < tasks.Length; ++i )
+				//{
+				//	arr[i] = tasks[i].Result;
+				//}
+
+				//time.Stop();
+				//lib.Log.info( $"{time.DurationMS} to task ask_fromService" );
+
+				return list.ToArray();
+			});
+
+			var task = new Task<msg.Answer<TSource, TMsg>[]>(answer);
+			task.Start();
+
+			return task;
+		}
+		*/
+
+		public void processMessagesBlock( int maxMS )
+		{
+			processPendingServices();
 			processMessages();
 			var early = m_wait.WaitOne(maxMS);
 		}

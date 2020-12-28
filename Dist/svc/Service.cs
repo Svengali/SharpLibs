@@ -49,6 +49,11 @@ namespace svc
 			return HashCode.Combine( Mgr, Source );
 		}
 
+		public override string ToString()
+		{
+			return $"{Mgr}:{Source}";
+		}
+
 		public static bool operator ==( RTAddress left, RTAddress right )
 		{
 			return left.Equals( right );
@@ -107,7 +112,7 @@ namespace svc
 				m_qMax = (uint)m_q.Count;
 			}
 
-			maxCount = Math.Max( maxCount, m_q.Count );
+			maxCount = Math.Min( maxCount, m_q.Count );
 
 			while( maxCount-- > 0 && m_q.Count > 0 )
 			{
@@ -354,18 +359,18 @@ namespace svc
 		}
 		*/
 
-		public void send( TMsg msg, [CallerFilePath] string callerFilePath = "", [CallerMemberName] string callerMemberName = "", [CallerLineNumber] int callerLineNumber = 0 )
+		public void send( TMsg msg, Func<Service<TMsg>, bool> fn, [CallerFilePath] string callerFilePath = "", [CallerMemberName] string callerMemberName = "", [CallerLineNumber] int callerLineNumber = 0 )
 		{
 			//msg.setSender_fromService( this );
 			//msg.setCaller_fromService( callerFilePath, callerMemberName, callerLineNumber );
-			s_mgr.send_fromService( new RTAddress(s_mgr.Id, id), msg );
+			s_mgr.send_fromService( new RTAddress(s_mgr.Id, id), msg, fn );
 		}
 
-		public Task<msg.Answer<Service<TMsg>, TMsg>[]> ask( TMsg msg, [CallerFilePath] string callerFilePath = "", [CallerMemberName] string callerMemberName = "", [CallerLineNumber] int callerLineNumber = 0 )
+		public Task<msg.Answer<Service<TMsg>, TMsg>[]> ask( TMsg msg, Func<Service<TMsg>, bool> fn, [CallerFilePath] string callerFilePath = "", [CallerMemberName] string callerMemberName = "", [CallerLineNumber] int callerLineNumber = 0 )
 		{
 			//msg.setSender_fromService( this );
 			//msg.setCaller_fromService( callerFilePath, callerMemberName, callerLineNumber );
-			return s_mgr.ask_fromService( new RTAddress( s_mgr.Id, id ), msg );
+			return s_mgr.ask_fromService( new RTAddress( s_mgr.Id, id ), msg, fn );
 		}
 
 

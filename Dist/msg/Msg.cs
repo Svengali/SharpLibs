@@ -182,12 +182,17 @@ namespace msg
 
 	public class Ping : Msg
 	{
-		
+		public svc.RTAddress address;
+	}
+
+	public class Startup : Msg
+	{
+
 	}
 
 	public class Ready : Msg
 	{
-		public svc.SourceId source;
+		public svc.RTAddress address;
 	}
 
 

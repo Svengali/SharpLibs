@@ -522,12 +522,28 @@ namespace sv
 
 			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
 			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+
+			//*
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			//*/
+
+			//*
 			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
 			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
 			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
 			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
-			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
-			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			//*/
+
+			foreach( var mac in m_machines )
+			{
+				m_svcMgr.start( mac );
+			}
+
+
+			m_svcMgr.startup();
+
+			Thread.Sleep( 1000 );
 
 			var startup = new msg.Startup {};
 
@@ -536,15 +552,10 @@ namespace sv
 			foreach( var mac in m_machines )
 			{
 				m_svcMgr.send_fromService( address, startup, ( svc ) => svc.id == mac.id );
-				m_svcMgr.start( mac );
 			}
 
 
-			//TODO: Move these into machine startup.
-			tick();
-			Thread.Sleep( 1000 );
-
-			//Now startup all the listed services
+				//Now startup all the listed services
 			foreach( var s in m_cfg.res.services )
 			{
 				/*
@@ -582,6 +593,7 @@ namespace sv
 		public void startup()
 		{
 			Thread thread = new Thread( new ThreadStart( run ) );
+			thread.Name = $"Main Thread";
 			thread.Start();
 		}
 
@@ -599,10 +611,11 @@ namespace sv
 		{
 			clock.tick();
 
-			m_svcMgr.processMessagesBlock( 1000 );
+			//m_svcMgr.processMessagesBlock( 1000 );
 
 			//m_backend.Touch("test");
 
+			Thread.Sleep(10);
 		}
 
 

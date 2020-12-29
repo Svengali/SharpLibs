@@ -106,20 +106,23 @@ namespace svc
 			var args = new Type[ 1 ];
 			var thisType = GetType();
 
+			/*
 			if( m_qMax < m_q.Count )
 			{
 				lib.Log.warn( $"Service Q hit highwater of {m_q.Count} in {GetType()}." );
 				m_qMax = (uint)m_q.Count;
 			}
+			*/
 
-			maxCount = Math.Min( maxCount, m_q.Count );
+			//maxCount = Math.Min( maxCount, m_q.Count );
 
-			while( maxCount-- > 0 && m_q.Count > 0 )
+			while( !m_q.IsEmpty )
 			{
 				msg.MsgContext<TSource, TMsg> ctx;
-				m_q.TryDequeue( out ctx );
+				
+				var gotOne = m_q.TryDequeue( out ctx );
 
-				if( ctx.Msg != null )
+				if( gotOne )
 				{
 					if( ctx.Wait == null )
 					{
@@ -241,7 +244,7 @@ namespace svc
 		public void procMsg_block( int wait )
 		{
 			procMsg( 1000 );
-			m_event.WaitOne( wait );
+			//m_event.WaitOne( wait );
 		}
 
 		public void procMsg_block()

@@ -104,14 +104,17 @@ namespace db
 
 		public void start()
 		{
+			int count = 0;
 			foreach( var p in m_processors )
 			{
 				var start = new ThreadStart( p.run );
 
 				var th = new Thread( start );
+				th.Name = $"System {count}";
 
 				th.Start();
 
+				++count;
 			}
 		}
 

@@ -46,153 +46,61 @@ namespace svc
 			m_pendingService.Enqueue( svc );
 		}
 
-
-		/*
-		public msg.AddressAll<TSource, TMsg> AddressAll()
-		{
-			return new AddressAll<TSource, TMsg>();
-		}
-		*/
-
 		public void send_fromService( RTAddress from, TMsg msg, Func<TSource, bool> fn )
 		{
 			var ctx = new msg.MsgContext<TSource, TMsg>( from, msg, fn, false );
 			m_q.Enqueue( ctx );
-			m_wait.Set();
+			//m_wait.Set();
 		}
 
 		public Task<msg.Answer<TSource, TMsg>[]> ask_fromService( RTAddress from, TMsg msg, Func<TSource, bool> fn )
 		{
 			var ctx = new msg.MsgContext<TSource, TMsg>( from, msg, fn, true );
 			m_q.Enqueue( ctx );
-			m_wait.Set();
+			//m_wait.Set();
 
 			// @@@@ PORT ASK
 			return null;
 		}
 
-		/*
-		public void send_fromService( TMsg msg )
-		{
-			/*
-			var c = new msg.MsgContext<TSource, TMsg>();
-			c.msg = msg;
-			m_q.Enqueue( c );
-			m_wait.Set();
-			* /
-
-			procMsg( msg );
-		}
-
-		public Task<msg.Answer<TSource, TMsg>[]> ask_fromService( TMsg m )
-		{
-
-			var ctx = msg.MsgContext<TSource, TMsg>.ask( m );
-			m_q.Enqueue( ctx );
-			m_wait.Set();
-
-
-
-			var answer = new Func<msg.Answer<TSource, TMsg>[]>(() =>
-			{
-				//var time = new lib.Timer();
-				//time.Start();
-
-				ctx.wait.WaitOne();
-				Task<msg.Answer<TSource, TMsg>>[] tasks = ctx.task.ToArray();
-				Task.WaitAll(tasks);
-
-				var list = new List<msg.Answer<TSource, TMsg>>();
-				for(uint i = 0; i < tasks.Length; ++i)
-				{
-					if(tasks[ i ].Result.source != null)
-					{
-						list.Add(tasks[ i ].Result);
-					}
-				}
-
-				//Answer<TSource, TMsg>[] arr = new Answer<TSource, TMsg>[ tasks.Length ];
-				//for( uint i = 0; i < tasks.Length; ++i )
-				//{
-				//	arr[i] = tasks[i].Result;
-				//}
-
-				//time.Stop();
-				//lib.Log.info( $"{time.DurationMS} to task ask_fromService" );
-
-				return list.ToArray();
-			});
-
-			var task = new Task<msg.Answer<TSource, TMsg>[]>(answer);
-			task.Start();
-
-			return task;
-		}
-		*/
-
 		public void processMessagesBlock( int maxMS )
 		{
 			processPendingServices();
 			processMessages();
-			var early = m_wait.WaitOne(maxMS);
+			//var early = m_wait.WaitOne( 1000 );
 		}
 
 		public void processMessages()
 		{
+			/*
 			if( m_floatingMax < m_q.Count )
 			{
 				lib.Log.warn( $"TSource Q hit highwater of {m_q.Count} in {GetType()}." );
 				m_floatingMax = (uint)m_q.Count;
 			}
+			*/
 
-			while( m_q.Count > 0 )
+			while( !m_q.IsEmpty )
 			{
 				msg.MsgContext<TSource, TMsg> ctx;
-				m_q.TryDequeue( out ctx );
+				var gotOne = m_q.TryDequeue( out ctx );
 
-				Debug.Assert( ctx.Msg != null );
-
-				foreach( var pair in m_services )
+				if( gotOne )
 				{
-					if( ctx.Fn(pair.Value) )
+					Debug.Assert( ctx.Msg != null );
+
+					foreach( var pair in m_services )
 					{
-						pair.Value.deliver( ctx.From, ctx );
-					}
-				}
-
-
-					/*
-					if( ctx.msg != null )
-					{
-						if( ctx.wait == null )
+						if( ctx.Fn( pair.Value ) )
 						{
-							procMsg( ctx.msg );
-						}
-						else
-						{
-							foreach( var p in m_services )
-							{
-								if( ctx.msg.address.pass( p.Value ) )
-								{
-									var t = p.Value.deliverAsk(ctx.msg);
-									if( t != null )
-										ctx.task.Add( t );
-								}
-							}
-
-							var tf = ctx.msg.address.deliverAsk( ctx.msg );
-							if( tf != null )
-								ctx.task.Add( tf );
-
-							ctx.wait.Set();
-							//c.response = c.task.Result;
-
+							pair.Value.deliver( ctx.From, ctx );
 						}
 					}
-
-					*/
 				}
 			}
+
+			//m_wait.Reset();
+		}
 
 		private void processPendingServices()
 		{
@@ -200,9 +108,9 @@ namespace svc
 			{
 				TSource svc = null;
 
-				m_pendingService.TryDequeue( out svc );
+				var gotService = m_pendingService.TryDequeue( out svc );
 
-				if( svc != null )
+				if( gotService && svc != null )
 				{
 					lib.Log.info( $"Starting service {svc}" );
 
@@ -211,6 +119,7 @@ namespace svc
 					if( svc is ISourceRun runner )
 					{
 						var thread = new Thread(new ThreadStart(runner.run));
+						thread.Name = $"Service Thread";
 
 						thread.Start();
 
@@ -223,6 +132,50 @@ namespace svc
 				}
 			}
 		}
+
+
+		public void startup()
+		{
+			for( var i = 0; i < 10; ++i )
+			{
+				var thread = new Thread( new ThreadStart( run ) );
+				thread.Name = $"Mgr {i}";
+				thread.Start();
+
+				m_threads = m_threads.Add( thread );
+
+			}
+		}
+
+		public void run()
+		{
+			while( true )
+			{
+				//Sleeps for a second per tick internally.
+				//Can get interrupted if a message comes in during its sleep.
+				tick();
+			}
+		}
+
+		public void tick()
+		{
+			processMessagesBlock( 1000 );
+
+			//m_backend.Touch("test");
+
+		}
+
+
+
+
+
+
+
+
+
+
+
+
 
 		/*
 
@@ -273,7 +226,7 @@ namespace svc
 
 		public SourceId Id { get; }
 
-
+		ImmutableList<Thread> m_threads = ImmutableList<Thread>.Empty;
 
 		ImmutableDictionary<SourceId, TSource> m_services = ImmutableDictionary<svc.SourceId, TSource>.Empty;
 

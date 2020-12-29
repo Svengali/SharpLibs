@@ -535,6 +535,28 @@ namespace sv
 			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
 			//*/
 
+			//*
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			//*/
+
+			//*
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			//*/
+
+			/*
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			//*/
+
+
 			foreach( var mac in m_machines )
 			{
 				m_svcMgr.start( mac );
@@ -551,7 +573,7 @@ namespace sv
 
 			foreach( var mac in m_machines )
 			{
-				m_svcMgr.send_fromService( address, startup, ( svc ) => svc.id == mac.id );
+				m_svcMgr.send( address, startup, ( svc ) => svc.id == mac.id );
 			}
 
 

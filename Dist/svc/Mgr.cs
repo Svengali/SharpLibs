@@ -22,7 +22,6 @@ namespace svc
 
 	}
 
-
 	public class MgrCfg : lib.Config
 	{
 		public readonly ImmutableArray<MachineInfo> machines = ImmutableArray<MachineInfo>.Empty;
@@ -46,14 +45,30 @@ namespace svc
 			m_pendingService.Enqueue( svc );
 		}
 
-		public void send_fromService( RTAddress from, TMsg msg, Func<TSource, bool> fn )
+		public void send( RTAddress from, TMsg msg, Func<TSource, bool> fn )
 		{
 			var ctx = new msg.MsgContext<TSource, TMsg>( from, msg, fn, false );
 			m_q.Enqueue( ctx );
 			//m_wait.Set();
 		}
 
-		public Task<msg.Answer<TSource, TMsg>[]> ask_fromService( RTAddress from, TMsg msg, Func<TSource, bool> fn )
+		public void send( RTAddress from, RTAddress to, TMsg msg )
+		{
+			var ctx = new msg.MsgContext<TSource, TMsg>( from, msg, (svc) => svc.id == to.Source, false );
+
+			if( m_services.TryGetValue( to.Source, out var svc ) )
+			{
+				svc.deliver( from, ctx );
+			}
+			else
+			{
+				m_q.Enqueue( ctx );
+			}
+
+			//m_wait.Set();
+		}
+
+		public Task<msg.Answer<TSource, TMsg>[]> ask( RTAddress from, TMsg msg, Func<TSource, bool> fn )
 		{
 			var ctx = new msg.MsgContext<TSource, TMsg>( from, msg, fn, true );
 			m_q.Enqueue( ctx );
@@ -136,7 +151,7 @@ namespace svc
 
 		public void startup()
 		{
-			for( var i = 0; i < 10; ++i )
+			for( var i = 0; i < 4; ++i )
 			{
 				var thread = new Thread( new ThreadStart( run ) );
 				thread.Name = $"Mgr {i}";

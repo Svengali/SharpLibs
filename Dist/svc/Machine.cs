@@ -62,20 +62,20 @@ namespace svc
 
 			if( ts.TotalSeconds > 1.0 )
 			{
-				lib.Log.debug( $"{id} got {m_pingsRecvd} Pings in {ts.TotalSeconds} seconds" );
+				lib.Log.debug( $"{(uint)id & 0xffff:X4} got {m_pingsRecvd} Pings in {ts.TotalSeconds} seconds" );
 
 				m_lastLoggedPing = DateTime.Now;
 				m_pingsRecvd = 0;
 
 			}
 
-			//lib.Log.debug( $"{id} got Ping from {ping.address}" );
+			//lib.Log.debug( $"{(uint)id & 0xffff:X4}  got Ping from {ping.address}" );
 
 			var address = new RTAddress( s_mgr.Id, id );
 
 			if( address != ping.address && !m_otherServices.Contains(ping.address) )
 			{
-				lib.Log.debug( $"{id} PING adding service {ping.address}" );
+				lib.Log.debug( $"{(uint)id & 0xffff:X4}  PING adding service {ping.address}" );
 				m_otherServices = m_otherServices.Add( ping.address );
 			}
 
@@ -85,25 +85,25 @@ namespace svc
 
 		void handle( msg.Startup startup )
 		{
-			lib.Log.debug( $"{id} got Startup from" );
+			lib.Log.debug( $"{(uint)id & 0xffff:X4}  got Startup from" );
 
 			var address = new RTAddress( s_mgr.Id, id );
 			var ready = new msg.Ready{ address = address };
 
-			s_mgr.send_fromService( address, ready, (svc) => {
+			s_mgr.send( address, ready, (svc) => {
 				return true;
 			});
 		}
 
 		void handle( msg.Ready ready )
 		{
-			lib.Log.debug( $"{id} got Ready from {ready.address}" );
+			lib.Log.debug( $"{(uint)id & 0xffff:X4}  got Ready from {ready.address}" );
 
 			var address = new RTAddress( s_mgr.Id, id );
 
 			if( address != ready.address && !m_otherServices.Contains( ready.address ) )
 			{
-				lib.Log.debug( $"{id} READY adding service {ready.address}" );
+				lib.Log.debug( $"{(uint)id & 0xffff:X4}  READY adding service {ready.address}" );
 				m_otherServices = m_otherServices.Add( ready.address );
 
 				sendPing( address );
@@ -117,7 +117,7 @@ namespace svc
 
 			var whichService = m_rand.Next( m_otherServices.Count );
 
-			s_mgr.send_fromService( address, ping, ( svc ) => svc.id == m_otherServices[whichService].Source );
+			s_mgr.send( address, m_otherServices[whichService], ping );
 		}
 
 		Random m_rand = new Random();

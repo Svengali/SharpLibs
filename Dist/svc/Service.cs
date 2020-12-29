@@ -51,7 +51,7 @@ namespace svc
 
 		public override string ToString()
 		{
-			return $"{Mgr}:{Source}";
+			return $"{(uint)Mgr & 0xffff:X4}:{(uint)Source & 0xffff:X4}";
 		}
 
 		public static bool operator ==( RTAddress left, RTAddress right )
@@ -226,6 +226,8 @@ namespace svc
 				}
 			}
 
+			Thread.Sleep(0);
+
 			if( m_q.IsEmpty )
 			{
 				//m_event.Reset();
@@ -366,21 +368,21 @@ namespace svc
 		{
 			//msg.setSender_fromService( this );
 			//msg.setCaller_fromService( callerFilePath, callerMemberName, callerLineNumber );
-			s_mgr.send_fromService( new RTAddress(s_mgr.Id, id), msg, fn );
+			s_mgr.send( new RTAddress(s_mgr.Id, id), msg, fn );
 		}
 
 		public Task<msg.Answer<Service<TMsg>, TMsg>[]> ask( TMsg msg, Func<Service<TMsg>, bool> fn, [CallerFilePath] string callerFilePath = "", [CallerMemberName] string callerMemberName = "", [CallerLineNumber] int callerLineNumber = 0 )
 		{
 			//msg.setSender_fromService( this );
 			//msg.setCaller_fromService( callerFilePath, callerMemberName, callerLineNumber );
-			return s_mgr.ask_fromService( new RTAddress( s_mgr.Id, id ), msg, fn );
+			return s_mgr.ask( new RTAddress( s_mgr.Id, id ), msg, fn );
 		}
 
 
 		public void deliver( RTAddress from, msg.MsgContext<Service<TMsg>, TMsg> ctx )
 		{
 			m_q.Enqueue( ctx );
-			m_event.Set();
+			//m_event.Set();
 		}
 
 		public Task<Answer<Service<TMsg>, TMsg>> deliverAsk( RTAddress from, msg.MsgContext<Service<TMsg>, TMsg> ctx )

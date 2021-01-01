@@ -519,30 +519,31 @@ namespace sv
 			} );
 			*/
 
-
-			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
-			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
-
-			//*
+			/*
 			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
 			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
 			//*/
 
-			//*
-			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
-			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			/*
 			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
 			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
 			//*/
 
-			//*
+			/*
 			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
 			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
 			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
 			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
 			//*/
 
-			//*
+			/*
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+			//*/
+
+			/*
 			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
 			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
 			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );

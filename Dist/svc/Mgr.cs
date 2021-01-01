@@ -68,6 +68,19 @@ namespace svc
 			//m_wait.Set();
 		}
 
+		public void broadcast( RTAddress from, TMsg msg )
+		{
+			var ctx = new msg.MsgContext<TSource, TMsg>( from, msg, (svc) => true, false );
+
+			foreach( var svc in m_services )
+			{
+				svc.Value.deliver( from, ctx );
+			}
+
+			//m_wait.Set();
+		}
+
+
 		public Task<msg.Answer<TSource, TMsg>[]> ask( RTAddress from, TMsg msg, Func<TSource, bool> fn )
 		{
 			var ctx = new msg.MsgContext<TSource, TMsg>( from, msg, fn, true );

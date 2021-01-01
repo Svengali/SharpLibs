@@ -16,3 +16,6 @@
 [submodule "MathSharp"]
 	path = MathSharp
 	url = https://github.com/Svengali/MathSharp
+[submodule "SFML.Net"]
+	path = SFML.Net
+	url = https://github.com/Svengali/SFML.Net

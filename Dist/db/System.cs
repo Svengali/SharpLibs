@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Text;
 using System.Threading;
+using System.Diagnostics;
 
 using Optional;
 
@@ -24,7 +25,7 @@ namespace db
 
 	public class SystemCfg : lib.Config
 	{
-		public readonly float Cores = 0;
+		public readonly float Cores = 2;
 	}
 
 	public class System<TID, T> where T : IID<TID>
@@ -43,7 +44,25 @@ namespace db
 
 			var procCount = Environment.ProcessorCount;
 
-			// @@@ TODO use configuration system to set number of cores.
+			//Exact comparison
+			if( m_cfg.res.Cores != 0.0f )
+			{
+				//If its less than 1, then use it as a multiplier
+				if( m_cfg.res.Cores < 0.0f )
+				{
+					procCount = Environment.ProcessorCount - (int)m_cfg.res.Cores;
+				}
+				else if( m_cfg.res.Cores < 1.0f )
+				{
+					procCount = (int) ((float)Environment.ProcessorCount * m_cfg.res.Cores);
+				}
+				else
+				{
+					procCount = (int)m_cfg.res.Cores;
+				}
+			}
+
+			lib.Log.info( $"Running {procCount} cores out of a total cores {Environment.ProcessorCount} via a config Cores value of {m_cfg.res.Cores}" );
 
 			Processor<TID, T>[] procs = new Processor<TID, T>[procCount];
 
@@ -110,7 +129,7 @@ namespace db
 				var start = new ThreadStart( p.run );
 
 				var th = new Thread( start );
-				th.Name = $"System {count}";
+				th.Name = $"System_{count}";
 
 				th.Start();
 
@@ -118,22 +137,21 @@ namespace db
 			}
 		}
 
-		public void run()
+		public void tick()
 		{
-			while( Running )
+			Debug.Assert( m_current.Count == 0 );
+
+			var current = m_current;
+			m_current = m_next;
+			m_next = current;
+
+			foreach( var proc in m_processors )
 			{
-				foreach( var p in m_processors )
-				{
-					p.tick();
-				}
+				Debug.Assert( proc.State == State.Waiting );
+
+				proc.kick();
 			}
-			
-
-
-
-
 		}
-
 
 
 		public void stopRunning()

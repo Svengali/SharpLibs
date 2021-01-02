@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 using Optional.Unsafe;
 
@@ -10,7 +11,8 @@ namespace db
 	{
 		Invalid,
 		Prestartup,
-		Running,
+		Active,
+		Waiting,
 		Stopped,
 	}
 
@@ -23,26 +25,29 @@ namespace db
 
 		public System<TID, T> Sys { get; private set; }
 
-		public State State { get; private set; } = State.Invalid;
+		public State State => m_state;
 
+		public SemaphoreSlim Semaphore { get; private set; } = new SemaphoreSlim( 1 );
+		public int Processed => m_processed;
 
 		public Processor( DB<TID, T> db, System<TID, T> sys )
 		{
 			DB = db;
 			Sys= sys;
-			State = State.Prestartup;
+			m_state = State.Prestartup;
 		}
 
 		public void run()
 		{
-			State = State.Running;
+			m_state = State.Active;
+
 
 			while( Sys.Running )
 			{
 				tick();
 			}
 
-			State = State.Stopped;
+			m_state = State.Stopped;
 		}
 
 		public void tick()
@@ -51,16 +56,33 @@ namespace db
 
 			if( !actOpt.HasValue )
 			{
-				lib.Log.info( $"Out of acts" );
+				lib.Log.info( $"{Thread.CurrentThread.Name} Processed {m_processed} acts" );
+
+				m_state = State.Waiting;
+				Semaphore.Wait();
+
+				m_state = State.Active;
+
+				m_processed = 0;
+
 				return;
 			}
 
 			var act = actOpt.ValueOrDefault();
 
-			//act.
+			act.Fn();
+
+			++m_processed;
+
 		}
 
+		public void kick()
+		{
+			Semaphore.Release();
+		}
 
+		volatile State m_state;
+		int m_processed = 0;
 
 
 

@@ -66,7 +66,6 @@ namespace svc
 	}
 
 
-
 	public interface ISource<TSource, TMsg>
 		where TSource : class, ISource<TSource, TMsg>
 		where TMsg : msg.IMsg<TSource, TMsg>
@@ -105,16 +104,6 @@ namespace svc
 		{
 			var args = new Type[ 1 ];
 			var thisType = GetType();
-
-			/*
-			if( m_qMax < m_q.Count )
-			{
-				lib.Log.warn( $"Service Q hit highwater of {m_q.Count} in {GetType()}." );
-				m_qMax = (uint)m_q.Count;
-			}
-			*/
-
-			//maxCount = Math.Min( maxCount, m_q.Count );
 
 			while( !m_q.IsEmpty )
 			{
@@ -231,9 +220,6 @@ namespace svc
 						{
 							unhandled( ctx.Msg );
 						}
-
-						//time.Stop();
-						//lib.Log.info( $"{time.DurationMS} to handleAsk" );
 					}
 				}
 			}
@@ -284,43 +270,13 @@ namespace svc
 		protected uint m_qMax = 10000;
 	}
 
-	// Handlers
-	/*
-	public partial class Service
-	{
-		public virtual void handle( svmsg.ServiceReady ready )
-		{
-
-		}
-
-		public object handleAsk( svmsg.Ping ping )
-		{
-			var dt = 0UL; //(ulong)sv.Main.main.clock.ms - ping.time;
-
-			lib.Log.info( $"Got ping {dt}" );
-
-			return ping;
-		}
-
-	}
-	*/
-
-
 
 
 	public partial class Service<TMsg> : Base<Service<TMsg>, TMsg>, ISource<Service<TMsg>, TMsg>
 		where TMsg : msg.IMsg<Service<TMsg>, TMsg>
 	{
 
-		//public lib.Token id { get; private set; }
-
 		public SourceId id { get; private set; }
-		//SourceId ISource<Service<TMsg>, TMsg>.id { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-		//public res.Ref<TSource> sref { get { return new res.Ref<TSource>( "nothing", this ); } }
-
-		//public ImmutableList<Type> Services { get; private set; }
-
 
 		public Service()
 		{
@@ -332,8 +288,6 @@ namespace svc
 
 			id = (SourceId)BitConverter.ToUInt64( bytes );
 
-			// @@@@ PORT
-			//gatherServices();
 		}
 
 
@@ -342,40 +296,7 @@ namespace svc
 			return (Service<TMsg>)Convert.ChangeType( this, typeof( Service<TMsg> ) );
 		}
 
-		/* @@@@ PORT 
-		void gatherServices()
-		{
-			var iserviceType = typeof( IService );
-
-			var allInterfaces = GetType().GetInterfaces();
-
-			var bldServices = ImmutableList<Type>.Empty.ToBuilder();
-
-			foreach( var iface in allInterfaces )
-			{
-				if( iface == iserviceType )
-					continue;
-
-				if( iserviceType.IsAssignableFrom( iface ) )
-				{
-					bldServices.Add( iface );
-				}
-			}
-
-			Services = bldServices.ToImmutable();
-		}
-
-		public void sendTo( TMsg msg, Service<TMsg> sref, [CallerFilePath] string callerFilePath = "", [CallerMemberName] string callerMemberName = "", [CallerLineNumber] int callerLineNumber = 0 )
-		{
-			// @@@@ PORT fix this one, and the next few send functions.
-			//msg.setSender_fromService( this );
-			//msg.setCaller_fromService( callerFilePath, callerMemberName, callerLineNumber );
-			sref.deliver( msg );
-			//deliver( msg );
-
-		}
-		*/
-
+		#region Outgoing
 		public void send( TMsg msg, RTAddress to, [CallerFilePath] string callerFilePath = "", [CallerMemberName] string callerMemberName = "", [CallerLineNumber] int callerLineNumber = 0 )
 		{
 			//msg.setSender_fromService( this );
@@ -396,7 +317,9 @@ namespace svc
 			//msg.setCaller_fromService( callerFilePath, callerMemberName, callerLineNumber );
 			return s_mgr.ask( new RTAddress( s_mgr.Id, id ), msg, fn );
 		}
+		#endregion
 
+		#region Incoming
 
 		public void deliver( RTAddress from, msg.MsgContext<Service<TMsg>, TMsg> ctx )
 		{
@@ -408,54 +331,9 @@ namespace svc
 		{
 			throw new NotImplementedException();
 		}
-
-		/*
-		public Task<msg.Answer<Service<TMsg>, TMsg>> deliverAsk( TMsg msg )
-		{
-			msg.MsgContext<Service<TMsg>, TMsg> ctx = global::msg.MsgContext<Service<TMsg>, TMsg>.ask( msg );
-			m_q.Enqueue( ctx );
-
-
-			var answer = new Func<msg.Answer<Service<TMsg>, TMsg>>(() =>
-			{
-				ctx.wait.WaitOne();
-				return ctx.response;
-			});
-
-			var t = new Task<msg.Answer<Service<TMsg>, TMsg>>(answer);
-			t.Start();
-
-			return t;
-		}
-
-		void ISource<Service<TMsg>, TMsg>.deliver( TMsg msg )
-		{
-			throw new NotImplementedException();
-		}
-
-		Task<Answer<Service<TMsg>, TMsg>> ISource<Service<TMsg>, TMsg>.deliverAsk( TMsg msg )
-		{
-			throw new NotImplementedException();
-		}
-		*/
-
-
-		//delegate void fnHandleGeneric<T>( TMsg msg, Action<T> fn ) where T : class;
-
-		/*
-		void handleGeneric<T>( TMsg msg, Action<T> fn ) where T : class
-		{
-			fn(msg as T);
-		}
-		*/
-
-
-		//internal StRunning Running => new StRunning();
+		#endregion
 
 		Random m_rand = new Random();
-
-
-
 
 	}
 
@@ -531,7 +409,7 @@ namespace svc
 		}
 
 
-		public void handle( msg.DelaySend msg )
+		internal void handle( msg.DelaySend msg )
 		{
 
 		}
@@ -559,7 +437,7 @@ namespace svc
 			}
 		}
 
-		private void sendPing( RTAddress address )
+		internal void sendPing( RTAddress address )
 		{
 			var ping = new msg.Ping{ address = address };
 

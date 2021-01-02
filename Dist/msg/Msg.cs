@@ -206,7 +206,6 @@ namespace msg
 	}
 
 
-
 	public class Server<TSource, TMsg> : msg.Msg, IMsg<TSource, TMsg>
 		where TSource : class, ISource<TSource, TMsg>
 		where TMsg : msg.IMsg<TSource, TMsg>

@@ -519,6 +519,9 @@ namespace sv
 			} );
 			*/
 
+			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
+
+
 			/*
 			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
 			m_machines = m_machines.Add( new svc.Machine( m_cfg.res.machineCfg ) );
@@ -568,6 +571,7 @@ namespace sv
 
 			Thread.Sleep( 1000 );
 
+			//*
 			var startup = new msg.Startup {};
 
 			var address = new RTAddress( m_svcMgr.Id, m_svcMgr.Id );
@@ -576,26 +580,7 @@ namespace sv
 			{
 				m_svcMgr.send( address, startup, ( svc ) => svc.id == mac.id );
 			}
-
-
-				//Now startup all the listed services
-			foreach( var s in m_cfg.res.services )
-			{
-				/*
-				var start = new svmsg.StartService( new svmsg.FilterType<svc.Machine>() )
-				{
-					type = s.type,
-					configPath = s.configPath,
-					name = s.name,
-				};
-
-				//start.type = s.type;
-				//start.configPath = s.configPath;
-				//start.name = s.name;
-
-				m_machine.send( start );
-				//*/
-			}
+			//*/
 
 
 		}

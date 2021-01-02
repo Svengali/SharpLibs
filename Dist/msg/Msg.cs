@@ -178,7 +178,11 @@ namespace msg
 	*/
 	#endregion
 
-
+	public class DelaySend : Msg
+	{
+		public RTAddress address;
+		public Msg msg;
+	}
 
 	public class Ping : Msg
 	{
@@ -187,7 +191,7 @@ namespace msg
 
 	public class Startup : Msg
 	{
-
+		public svc.RTAddress from;
 	}
 
 	public class Ready : Msg
@@ -195,6 +199,11 @@ namespace msg
 		public svc.RTAddress address;
 	}
 
+	public class StartService : Msg
+	{
+		public string type;
+		public string configPath;
+	}
 
 
 

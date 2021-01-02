@@ -13,15 +13,15 @@ using System.Threading.Tasks;
 namespace svc
 {
 
-	public class SvcUniverseCfg : ServiceCfg
+	public class SvcEdgeCfg : ServiceCfg
 	{
 	}
 
-	public class SvcUniverse : ServiceWithConfig<SvcUniverseCfg>, svc.ISourceRun
+	public class SvcEdge : ServiceWithConfig<SvcEdgeCfg>, svc.ISourceRun
 	{
 
 
-		public SvcUniverse( res.Ref<SvcUniverseCfg> _cfg )
+		public SvcEdge( res.Ref<SvcEdgeCfg> _cfg )
 			:
 			base( _cfg )
 		{
@@ -40,6 +40,26 @@ namespace svc
 
 
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

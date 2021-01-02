@@ -133,19 +133,31 @@ namespace svc
 						{
 							var mi = thisType.GetMethod("handle", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, args, null);
 
-							ParameterExpression pe = Expression.Parameter(typeof(TMsg), "msgIn");
+							if( mi != null )
+							{
+								ParameterExpression pe = Expression.Parameter(typeof(TMsg), "msgIn");
 
-							var exConvert = Expression.Convert(pe, args[ 0 ]);
+								var exConvert = Expression.Convert(pe, args[ 0 ]);
 
-							var exParams = new Expression[ 1 ];
-							exParams[0] = exConvert;
+								var exParams = new Expression[ 1 ];
+								exParams[0] = exConvert;
 
-							var exThis = Expression.Constant(this);
-							var exCall = Expression.Call(exThis, mi, exParams);
+								var exThis = Expression.Constant(this);
+								var exCall = Expression.Call(exThis, mi, exParams);
 
-							fn = Expression.Lambda<Action<TMsg>>( exCall, pe ).Compile();
+								fn = Expression.Lambda<Action<TMsg>>( exCall, pe ).Compile();
 
-							m_handlingMethod[args[0]] = fn;
+								m_handlingMethod[args[0]] = fn;
+
+								lib.Log.debug( $"{GetType().Name} is handling {args[0].Name}" );
+							}
+							else
+							{
+								lib.Log.warn( $"{args[0].Name} is unhandled in {GetType().Name}" );
+								m_handlingMethod[args[0]] = unhandled;
+								fn = unhandled;
+							}
+
 						}
 
 						if( fn != null )
@@ -364,6 +376,13 @@ namespace svc
 		}
 		*/
 
+		public void send( TMsg msg, RTAddress to, [CallerFilePath] string callerFilePath = "", [CallerMemberName] string callerMemberName = "", [CallerLineNumber] int callerLineNumber = 0 )
+		{
+			//msg.setSender_fromService( this );
+			//msg.setCaller_fromService( callerFilePath, callerMemberName, callerLineNumber );
+			s_mgr.send( new RTAddress( s_mgr.Id, id ), to, msg );
+		}
+
 		public void send( TMsg msg, Func<Service<TMsg>, bool> fn, [CallerFilePath] string callerFilePath = "", [CallerMemberName] string callerMemberName = "", [CallerLineNumber] int callerLineNumber = 0 )
 		{
 			//msg.setSender_fromService( this );
@@ -440,7 +459,13 @@ namespace svc
 
 	}
 
-	public class ServiceWithConfig<TCfg> : Service<msg.Msg> where TCfg : class
+	public class ServiceCfg : lib.Config
+	{
+		public readonly float testPingSec = 0.0f;
+	}
+
+
+	public class ServiceWithConfig<TCfg> : Service<msg.Msg> where TCfg : ServiceCfg
 	{
 		public res.Ref<TCfg> cfg { get; protected set; }
 
@@ -450,6 +475,102 @@ namespace svc
 		{
 			cfg = _cfg;
 		}
+
+		DateTime m_startPingTest = DateTime.Now;
+		DateTime m_lastLoggedPing = DateTime.Now;
+		uint m_pingsRecvd = 0;
+
+		void handle( msg.Ping ping )
+		{
+			++m_pingsRecvd;
+
+			var ts = DateTime.Now - m_lastLoggedPing;
+
+			if( ts.TotalSeconds > 1.0 )
+			{
+				lib.Log.debug( $"{(uint)id & 0xffff:X4} got {m_pingsRecvd} Pings in {ts.TotalSeconds} seconds" );
+
+				m_lastLoggedPing = DateTime.Now;
+				m_pingsRecvd = 0;
+
+			}
+
+			//lib.Log.debug( $"{(uint)id & 0xffff:X4}  got Ping from {ping.address}" );
+
+			var address = new RTAddress( s_mgr.Id, id );
+
+			/*
+			if( address != ping.address && !m_otherServices.Contains(ping.address) )
+			{
+				lib.Log.debug( $"{(uint)id & 0xffff:X4}  PING adding service {ping.address}" );
+				m_otherServices = m_otherServices.Add( ping.address );
+			}
+			*/
+
+			var tsFullTest = DateTime.Now - m_startPingTest;
+
+			if( tsFullTest.TotalSeconds < cfg.res.testPingSec )
+			{
+				sendPing( address );
+			}
+			else
+			{
+				lib.Log.info( $"Finished doing Ping tests." );
+			}
+		}
+
+
+		virtual internal void handle( msg.Startup startup )
+		{
+			lib.Log.debug( $"{(uint)id & 0xffff:X4} got Startup from" );
+
+			var address = new RTAddress( s_mgr.Id, id );
+			var ready = new msg.Ready{ address = address };
+
+			s_mgr.broadcast( address, ready );
+		}
+
+
+		public void handle( msg.DelaySend msg )
+		{
+
+		}
+
+
+		internal void handle( msg.Ready ready )
+		{
+			lib.Log.debug( $"{(uint)id & 0xffff:X4}  got Ready from {ready.address}" );
+
+			var address = new RTAddress( s_mgr.Id, id );
+
+			if( address != ready.address && !m_otherServices.Contains( ready.address ) )
+			{
+				lib.Log.debug( $"{(uint)id & 0xffff:X4} READY adding service {ready.address}" );
+				m_otherServices = m_otherServices.Add( ready.address );
+
+				var readyBack = new msg.Ready{ address = address };
+
+				var whichService = ready.address;
+
+				send( readyBack, whichService );
+
+				//sendPing( address );
+
+			}
+		}
+
+		private void sendPing( RTAddress address )
+		{
+			var ping = new msg.Ping{ address = address };
+
+			var whichService = m_rand.Next( m_otherServices.Count );
+
+			s_mgr.send( address, m_otherServices[whichService], ping );
+		}
+
+		Random m_rand = new Random();
+		ImmutableList<svc.RTAddress> m_otherServices = ImmutableList<svc.RTAddress>.Empty;
+
 	}
 
 

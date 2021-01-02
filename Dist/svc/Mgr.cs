@@ -42,7 +42,27 @@ namespace svc
 
 		public void start( TSource svc )
 		{
-			m_pendingService.Enqueue( svc );
+			if( svc != null )
+			{
+				lib.Log.info( $"Starting service {svc}" );
+
+				Imm.AddOrUpdate( ref m_services, svc.id, svc, ( k, v ) => svc );
+
+				if( svc is ISourceRun runner )
+				{
+					var thread = new Thread(new ThreadStart(runner.run));
+					thread.Name = $"Service Thread";
+
+					thread.Start();
+
+					lib.Log.info( $"{svc} is starting a thread to run.", "svc" );
+				}
+				else
+				{
+					lib.Log.info( $"{svc} is NOT starting a thread to run.", "svc" );
+				}
+
+			}
 		}
 
 		public void send( RTAddress from, TMsg msg, Func<TSource, bool> fn )
@@ -157,6 +177,7 @@ namespace svc
 					{
 						lib.Log.info( $"{svc} is NOT starting a thread to run.", "svc" );
 					}
+
 				}
 			}
 		}

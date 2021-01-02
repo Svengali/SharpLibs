@@ -30,9 +30,9 @@ namespace svc
 
 
 
-	public class MachineCfg : lib.Config
+	public class MachineCfg : ServiceCfg
 	{
-		public readonly float testPingSec = 0.0f;
+		public readonly msg.StartService[] services;
 	}
 
 	public class Machine : ServiceWithConfig<MachineCfg>, svc.ISourceRun
@@ -150,97 +150,97 @@ namespace svc
 			//Thread.Sleep(1000);
 		}
 
-		/*
-		void handle( msg.Hello hello )
+
+		override internal void handle( msg.Startup startup )
 		{
-			lib.Log.info( $"Got hello" );
-		}
-		*/
-
-		DateTime m_startPingTest = DateTime.Now;
-		DateTime m_lastLoggedPing = DateTime.Now;
-		uint m_pingsRecvd = 0;
-
-		void handle( msg.Ping ping )
-		{
-			++m_pingsRecvd;
-
-			var ts = DateTime.Now - m_lastLoggedPing;
-
-			if( ts.TotalSeconds > 1.0 )
-			{
-				lib.Log.debug( $"{(uint)id & 0xffff:X4} got {m_pingsRecvd} Pings in {ts.TotalSeconds} seconds" );
-
-				m_lastLoggedPing = DateTime.Now;
-				m_pingsRecvd = 0;
-
-			}
-
-			//lib.Log.debug( $"{(uint)id & 0xffff:X4}  got Ping from {ping.address}" );
+			base.handle ( startup );
 
 			var address = new RTAddress( s_mgr.Id, id );
 
-			/*
-			if( address != ping.address && !m_otherServices.Contains(ping.address) )
+			lib.Log.info( $"Starting up {cfg.res.services.Length} services" );
+			foreach( var svc in cfg.res.services )
 			{
-				lib.Log.debug( $"{(uint)id & 0xffff:X4}  PING adding service {ping.address}" );
-				m_otherServices = m_otherServices.Add( ping.address );
+				send( svc, address );
 			}
-			*/
+		}
 
-			var tsFullTest = DateTime.Now - m_startPingTest;
 
-			if( tsFullTest.TotalSeconds < cfg.res.testPingSec )
+		public void handle( msg.StartService start )
+		{
+			Type[] types = new Type[ 1 ];
+			object[] parms = new object[ 1 ];
+
+			//types[0] = typeof( lib.Token );
+
+			Type svcType = Type.GetType( start.type );
+
+			if( svcType != null )
 			{
-				sendPing( address );
+				// @@@ DEPENDENCY This implies that all services are a subclass of a class that has 1 
+				// generic argument that is its config type
+				Type cfgType = svcType.BaseType.GenericTypeArguments[0];
+
+				//res.Ref cfg = res.Mgr.lookup( start.configPath, cfgType );
+
+				var refGenType = typeof(res.Ref<>);
+
+				var refType = refGenType.MakeGenericType( cfgType );
+
+				var cfg = Activator.CreateInstance( refType, start.configPath );
+
+				if( cfg != null )
+				{
+					types[0] = cfg.GetType();
+
+					ConstructorInfo cons = svcType.GetConstructor( types );
+
+					try
+					{
+						//parms[0] = new lib.Token( start.name );
+						parms[0] = cfg;
+
+						lib.Log.info( $"Starting service {"unknown"} of type {refType.Name} using config {start.configPath}" );
+
+						svc.Service<msg.Msg> newService = (svc.Service<msg.Msg>)cons.Invoke( parms );
+
+						s_mgr.start( newService );
+
+
+
+						var startupMsg = new msg.Startup {};
+
+						var svcAddress = new RTAddress( s_mgr.Id, newService.id );
+
+						//var delayMsg = new msg.DelaySend { address = svcAddress, msg = startupMsg };
+
+
+						//s_mgr.send(  )
+
+						send( startupMsg, svcAddress );
+
+
+					}
+					catch( Exception ex )
+					{
+						lib.Log.error( $"Exception while calling service constructor {ex}" );
+					}
+				}
+				else
+				{
+					lib.Log.warn( $"Could not find service of type {start.type}" );
+				}
+
+
 			}
 			else
 			{
-				lib.Log.info( $"Finished doing Ping tests." );
+				lib.Log.warn( $"Could not find service of type {start.type}" );
 			}
 		}
 
 
-		void handle( msg.Startup startup )
-		{
-			lib.Log.debug( $"{(uint)id & 0xffff:X4}  got Startup from" );
 
-			var address = new RTAddress( s_mgr.Id, id );
-			var ready = new msg.Ready{ address = address };
 
-			s_mgr.broadcast( address, ready );
-
-			//initForTest();
-			//timeTest();
-		}
-
-		void handle( msg.Ready ready )
-		{
-			lib.Log.debug( $"{(uint)id & 0xffff:X4}  got Ready from {ready.address}" );
-
-			var address = new RTAddress( s_mgr.Id, id );
-
-			if( address != ready.address && !m_otherServices.Contains( ready.address ) )
-			{
-				lib.Log.debug( $"{(uint)id & 0xffff:X4}  READY adding service {ready.address}" );
-				m_otherServices = m_otherServices.Add( ready.address );
-
-				sendPing( address );
-
-			}
-		}
-
-		private void sendPing( RTAddress address )
-		{
-			var ping = new msg.Ping{ address = address };
-
-			var whichService = m_rand.Next( m_otherServices.Count );
-
-			s_mgr.send( address, m_otherServices[whichService], ping );
-		}
-
-		Random m_rand = new Random();
-		ImmutableList<svc.RTAddress> m_otherServices = ImmutableList<svc.RTAddress>.Empty;
 
 	}
 

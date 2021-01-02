@@ -31,9 +31,6 @@
     <Compile Update="ent\GenEntity.cs">
       <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
     </Compile>
-    <Compile Update="GenEntity.cs">
-      <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
-    </Compile>
   </ItemGroup>
 
 </Project>

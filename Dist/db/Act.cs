@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace db
@@ -10,21 +11,29 @@ namespace db
 	{
 		public Action Fn => m_act;
 
-		public Act( Action act )
+		public string Path { get; private set; } = "";
+		public int    Line { get; private set; } = -1;
+		public string Member { get; private set; } = "";
+
+		private Act( Action act, string path = "", int line = -1, string member = "" )
 		{
 			m_act = act;
 
-			ExtractValue( act );
+			Path = path;
+			Line = line;
+			Member = member;
+
+			//ExtractValue( act );
 		}
 
-		static public Act create( Action act )
+		static public Act create( Action act, [CallerFilePath] string path = "", [CallerLineNumber] int line = -1, [CallerMemberName] string member = "" )
 		{
 			//ExtractValue( act );
 
 			return new Act( act );
 		}
 
-		public static Act create<T>( Action<T> act, T p0 )
+		public static Act create<T>( Action<T> act, T p0, [CallerFilePath] string path = "", [CallerLineNumber] int line = -1, [CallerMemberName] string member = "" )
 		{
 			//ExtractValue( act );
 
@@ -34,11 +43,9 @@ namespace db
 		}
 
 
-
-
 		public static void ExtractValue( Delegate lambda )
 		{
-			var delType = lambda.GetType();
+			var lambdaType = lambda.GetType();
 
 			var methodType = lambda.Method.GetType();
 

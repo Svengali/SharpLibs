@@ -284,11 +284,8 @@ namespace svc
 		private ConcurrentQueue<TSource> m_pendingService = new ConcurrentQueue<TSource>();
 		private EventWaitHandle m_wait = new EventWaitHandle( true, EventResetMode.AutoReset );
 
-		private uint m_floatingMax = 10000;
 
 		public Ref<MgrCfg> Cfg { get; }
-
-		//private ConcurrentDictionary<
 	}
 
 

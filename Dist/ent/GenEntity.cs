@@ -36,7 +36,7 @@ namespace ent
 
 	static public class EntityOps
 	{
-		static int s_entityId = 1024;
+		//static int s_entityId = 1024;
 	}
 
 	public class VisitEntity

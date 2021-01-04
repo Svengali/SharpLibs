@@ -15,19 +15,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace svc
 {
 
-	public class DBEntity : db.DB<ent.EntityId, ent.Entity>
-	{
-	}
-
-
-	public class SysEntity : db.System<ent.EntityId, ent.Entity>
-	{
-		public SysEntity( res.Ref<db.SystemCfg> cfg, DBEntity db ) 
-			: 
-			base( cfg, db )
-		{
-		}
-	}
 
 
 	public class SvcRulesCfg : ServiceCfg
@@ -55,18 +42,42 @@ namespace svc
 
 		public void run()
 		{
+
+
+			var currentTime = DateTime.Now;
+
 			while( true )
 			{
-				procMsg_block();
-
 				switch( m_state )
 				{
 					case State.Running:
-						m_sys.tick();
+					m_sys.tick();
+
+					var snap = m_db.getSnapshot();
+
 					break;
 				}
 
-				Thread.Sleep( 33 );
+				procMsg_block();
+
+				var spentTime = DateTime.Now;
+
+				var delta = spentTime - currentTime;
+
+				var deltaMS = delta.TotalMilliseconds;
+
+				var pause = Math.Max( 0, 33.0 - deltaMS );
+
+				var pauseInt = (int)pause;
+
+				Thread.Sleep( pauseInt );
+
+				if( pauseInt == 0 )
+				{
+					lib.Log.warn( $"Long frame {delta.TotalMilliseconds}" );
+				}
+
+				currentTime = DateTime.Now;
 
 			}
 		}
@@ -77,33 +88,78 @@ namespace svc
 
 
 
-			m_db = new DBEntity();
+			m_db = new ent.DB();
 
-			m_sys= new SysEntity( cfg.res.SystemCfg, m_db );
+			m_sys= new ent.Sys( cfg.res.SystemCfg, m_db );
 
 			m_state = State.Running;
 
 			m_sys.start();
 
-			var act = new db.Act( tick );
 
+			var timed = db.Act.create( timedTick );
+			m_sys.future( timed, 1.0, 0.0 );
+
+
+			var act = db.Act.create( frameTick );
 			m_sys.next( act );
 
+			/*
+			m_sys.next( act );
+			m_sys.next( act );
+			m_sys.next( act );
+
+			m_sys.next( act );
+			m_sys.next( act );
+			m_sys.next( act );
+			m_sys.next( act );
+
+			m_sys.next( act );
+			m_sys.next( act );
+			m_sys.next( act );
+			m_sys.next( act );
+
+			m_sys.next( act );
+			m_sys.next( act );
+			m_sys.next( act );
+			m_sys.next( act );
+			//*/
 		}
 
-		void tick()
+		void frameTick()
 		{
-			lib.Log.debug( $"{Thread.CurrentThread.Name} Tick!" );
-			var act = new db.Act( tick );
+			//lib.Log.debug( $"{Thread.CurrentThread.Name} Frame Tick!" );
+			var act = db.Act.create( frameTick );
 			m_sys.next( act );
+
+			m_sys.addTimedActions();
+		}
+
+		DateTime m_lastTick = DateTime.Now;
+
+		void timedTick()
+		{
+			var ts = DateTime.Now - m_lastTick;
+			m_lastTick = DateTime.Now;
+
+			lib.Log.debug( $"{Thread.CurrentThread.Name} Timed Tick! {ts.TotalMilliseconds}" );
+			var act = db.Act.create( timedTick );
+			m_sys.future( act, 1.0, 0.0 );
+		}
+
+
+		void show( FormattableString format )
+		{
+
 		}
 
 
 
-
-		public DBEntity		m_db;
-		public SysEntity	m_sys;
+		public ent.DB		m_db;
+		public ent.Sys	m_sys;
 		public State			m_state;
+
+		//public static ImmutableDictionary<EntityId, Entity> m_snapshot = ImmutableDictionary<EntityId, Entity>.Empty;
 
 	}
 

@@ -30,6 +30,8 @@ namespace db
 		public SemaphoreSlim Semaphore { get; private set; } = new SemaphoreSlim( 1 );
 		public int Processed => m_processed;
 
+		public Act DebugCurrentAct => m_debugCurrentAct;
+
 		public Processor( DB<TID, T> db, System<TID, T> sys )
 		{
 			DB = db;
@@ -56,7 +58,7 @@ namespace db
 
 			if( !actOpt.HasValue )
 			{
-				lib.Log.info( $"{Thread.CurrentThread.Name} Processed {m_processed} acts" );
+				//lib.Log.trace( $"{Thread.CurrentThread.Name} Processed {m_processed} acts" );
 
 				m_state = State.Waiting;
 				Semaphore.Wait();
@@ -69,6 +71,10 @@ namespace db
 			}
 
 			var act = actOpt.ValueOrDefault();
+
+			m_debugCurrentAct = act;
+
+			// @@@ TODO Put a timer around this and make sure any particular act is shorter than that.  Probably 1ms and 5ms.  
 
 			act.Fn();
 
@@ -83,9 +89,9 @@ namespace db
 
 		volatile State m_state;
 		int m_processed = 0;
+		//volatile string ProcessingDebug = "";
 
-
-
+		Act m_debugCurrentAct = null;
 
 
 

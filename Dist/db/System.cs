@@ -7,11 +7,12 @@ using System.Threading;
 using System.Diagnostics;
 
 using Optional;
+using System.Diagnostics.CodeAnalysis;
 
 namespace db
 {
 
-	struct TimedAction
+	struct TimedAction : IComparable<TimedAction>
 	{
 		public long when;
 		public Act  act;
@@ -21,11 +22,28 @@ namespace db
 			this.when = when;
 			this.act = act;
 		}
+
+		public int CompareTo( [AllowNull] TimedAction other )
+		{
+			return when.CompareTo( other.when );
+		}
+
+		public override bool Equals( object obj )
+		{
+			return obj is TimedAction action &&
+							 when == action.when &&
+							EqualityComparer<Act>.Default.Equals( act, action.act );
+		}
+
+		public override int GetHashCode()
+		{
+			return HashCode.Combine( when, act );
+		}
 	}
 
 	public class SystemCfg : lib.Config
 	{
-		public readonly float Cores = 2;
+		public readonly float Cores = 8;
 	}
 
 	public class System<TID, T> where T : IID<TID>
@@ -118,7 +136,10 @@ namespace db
 
 			var ta = new TimedAction( ticks, act );
 
-			m_sortedFutureActions = m_sortedFutureActions.Add( ta );
+			var newFuture = m_futureActions.Add( ta );
+
+			Interlocked.Exchange( ref m_futureActions, newFuture );
+
 		}
 
 		public void start()
@@ -147,12 +168,80 @@ namespace db
 
 			foreach( var proc in m_processors )
 			{
-				Debug.Assert( proc.State == State.Waiting );
+				//Debug.Assert( proc.State == State.Waiting );
 
 				proc.kick();
 			}
 		}
 
+		public void wait( int targetMs, int maxMs )
+		{
+			var done = 0;
+
+			var start = DateTime.Now;
+			var delta = start - start;
+
+			while( done < m_processors.Count && delta.TotalMilliseconds < maxMs )
+			{
+				done = 0;
+
+				foreach( var proc in m_processors )
+				{
+					if( proc.State != State.Active )
+					{
+						++done;
+					}
+				}
+
+				delta = DateTime.Now - start;
+			}
+
+			if( done != m_processors.Count )
+			{
+				lib.Log.warn( $"Processing took significantly too long {delta.TotalSeconds}sec." );
+
+				foreach( var proc in m_processors )
+				{
+					Act debugAct = proc.DebugCurrentAct;
+
+					if( proc.State == State.Active )
+					{
+						lib.Log.warn( $"Proc is still running\n{debugAct.Path}({debugAct.Line}): In method {debugAct.Member}" );
+
+						// @@@ TODO Should we kill the procedure?  Let it continue to run?
+					}
+				}
+			}
+
+			if( delta.TotalMilliseconds > targetMs )
+			{
+				lib.Log.warn( $"Missed our target {delta.TotalMilliseconds} framerate." );
+			}
+
+		}
+
+
+		public void addTimedActions()
+		{
+			var sortedFutureActions = m_futureActions.Sort( );
+
+			var future = TimeSpan.FromMilliseconds( 66 );
+
+			var time = DateTime.Now + future;
+
+			foreach( var action in sortedFutureActions )
+			{
+				if( action.when < time.Ticks )
+				{
+					next( action.act );
+
+					var newActions = m_futureActions.Remove( action );
+
+					Interlocked.Exchange( ref m_futureActions, newActions );
+
+				}
+			}
+		}
 
 		public void stopRunning()
 		{
@@ -183,7 +272,15 @@ namespace db
 		ConcurrentBag<Act> m_current = new ConcurrentBag<Act>();
 		ConcurrentBag<Act> m_next = new ConcurrentBag<Act>();
 
-		ImmutableList<TimedAction> m_sortedFutureActions;
+		// @@ TODO Keep an eye on the timing of this.
+		ImmutableList<TimedAction> m_futureActions = ImmutableList<TimedAction>.Empty;
+
+		/*
+		TimedAction[] m_sortedFutureActions = new TimedAction[16 * 1024];
+		int m_sfaStart = 0;
+		int m_sfaEnd   = 0;
+		*/
+
 
 
 		ImmutableList<Processor<TID, T>> m_processors = ImmutableList<Processor<TID, T>>.Empty;

@@ -23,6 +23,10 @@
     <ProjectReference Include="..\GenCore\GenCore.csproj" />
     <ProjectReference Include="..\GenNet\GenNet.csproj" />
     <ProjectReference Include="..\NetCore\NetCore.csproj" />
+    <ProjectReference Include="..\SFML.Net\src\SFML.Audio\SFML.Audio.csproj" />
+    <ProjectReference Include="..\SFML.Net\src\SFML.Graphics\SFML.Graphics.csproj" />
+    <ProjectReference Include="..\SFML.Net\src\SFML.System\SFML.System.csproj" />
+    <ProjectReference Include="..\SFML.Net\src\SFML.Window\SFML.Window.csproj" />
     <ProjectReference Include="..\SharpLib\SharpLib.csproj" />
   </ItemGroup>
 

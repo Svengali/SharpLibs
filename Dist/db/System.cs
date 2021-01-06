@@ -43,7 +43,7 @@ namespace db
 
 	public class SystemCfg : lib.Config
 	{
-		public readonly float Cores = 8;
+		public readonly float Cores = 1;
 	}
 
 	public class System<TID, T> where T : IID<TID>

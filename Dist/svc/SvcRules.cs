@@ -22,8 +22,9 @@ namespace svc
 		public readonly res.Ref<db.SystemCfg> SystemCfg = new res.Ref<db.SystemCfg>();
 	}
 
-	public class SvcRules : ServiceWithConfig<SvcRulesCfg>, svc.ISourceRun
+	public partial class SvcRules : ServiceWithConfig<SvcRulesCfg>, svc.ISourceRun
 	{
+		// TODO DUPE code refactor to somewhere shared.
 		public enum State
 		{
 			Invalid,
@@ -82,6 +83,8 @@ namespace svc
 			}
 		}
 
+
+
 		override internal void handle( msg.Startup startup )
 		{
 			base.handle( startup );
@@ -98,7 +101,7 @@ namespace svc
 
 
 			var timed = db.Act.create( timedTick );
-			m_sys.future( timed, 1.0, 0.0 );
+			m_sys.future( timed, 60.0, 0.0 );
 
 
 			var act = db.Act.create( frameTick );
@@ -126,6 +129,8 @@ namespace svc
 			//*/
 		}
 
+
+
 		void frameTick()
 		{
 			//lib.Log.debug( $"{Thread.CurrentThread.Name} Frame Tick!" );
@@ -144,10 +149,13 @@ namespace svc
 
 			lib.Log.debug( $"{Thread.CurrentThread.Name} Timed Tick! {ts.TotalMilliseconds}" );
 			var act = db.Act.create( timedTick );
-			m_sys.future( act, 1.0, 0.0 );
+			m_sys.future( act, 60.0, 0.0 );
 		}
 
 
+
+
+		// @@@@ Test for passing in FormattableString s.
 		void show( FormattableString format )
 		{
 
@@ -157,7 +165,7 @@ namespace svc
 
 		public ent.DB		m_db;
 		public ent.Sys	m_sys;
-		public State			m_state;
+		public State		m_state;
 
 		//public static ImmutableDictionary<EntityId, Entity> m_snapshot = ImmutableDictionary<EntityId, Entity>.Empty;
 

@@ -5,13 +5,15 @@ using System.IO;
 using System.Text;
 using System.Threading;
 
-using gen;
-
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
 using Optional;
 using Optional.Collections;
 using Optional.Unsafe;
+
+using Vec = MathSharp.Vector;
+using Vec4 = System.Runtime.Intrinsics.Vector128<float>;
+
 
 //using static net.Views;
 
@@ -170,6 +172,11 @@ namespace ent
 
 	}
 
+	[gen.NetView( new Type[] { } )]
+	public partial class ComWithCfg<T, TCFG> : Component<T>
+	{
+
+	}
 
 
 	public partial interface IComHealth
@@ -178,7 +185,7 @@ namespace ent
 	}
 
 	[gen.NetView( new Type[] { } )]
-	public partial class ComHealth : Component<ComHealth>, IComHealth
+	public partial class ComHealth : ComWithCfg<ComHealth, ComHealthCfg>
 	{
 		//[gen.History]
 		float m_health;
@@ -196,11 +203,19 @@ namespace ent
 
 			m_health = ops.op( "m_health", vCom.m_health, m_health );
 
-
 		}
-
-
 	}
+
+
+
+	[gen.NetView( new Type[] { } )]
+	public partial class ComPhysics : ComWithCfg<ComPhysics, ComPhysicsCfg>
+	{
+		public Vec4 pos;
+		public Vec4 vel;
+	}
+
+
 
 
 }

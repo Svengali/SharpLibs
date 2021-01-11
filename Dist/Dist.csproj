@@ -22,6 +22,7 @@
     <ProjectReference Include="..\CodeGeneration.Roslyn\src\CodeGeneration.Roslyn.Tool\CodeGeneration.Roslyn.Tool.csproj" />
     <ProjectReference Include="..\GenCore\GenCore.csproj" />
     <ProjectReference Include="..\GenNet\GenNet.csproj" />
+    <ProjectReference Include="..\MathSharp\sources\MathSharp\MathSharp.csproj" />
     <ProjectReference Include="..\NetCore\NetCore.csproj" />
     <ProjectReference Include="..\SFML.Net\src\SFML.Audio\SFML.Audio.csproj" />
     <ProjectReference Include="..\SFML.Net\src\SFML.Graphics\SFML.Graphics.csproj" />

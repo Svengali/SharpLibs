@@ -17,17 +17,6 @@ namespace ent
 	}
 
 
-	public partial class Component<T>
-	{
-
-	}
-
-	public partial class ComponentWithCfg<T, TCFG> : Component<T>
-	{
-
-	}
-
-
 
 
 
@@ -54,28 +43,6 @@ namespace ent
 
 
 
-	}
-
-
-	public partial class ComHealth
-	{
-		public bool isDead()
-		{
-			return m_health <= 0.0f;
-		}
-
-		//[gen.NetView( new[] { typeof( net.View<Gameplay> ) } )]
-		public Entity takeDamage( Entity ent, float amount )
-		{
-			var newHealth = m_health - amount;
-			var com = with( m_healthOpt: newHealth.Some() );
-
-			//var comList = ent.
-
-			//var health = ent.com<ComHealth>();
-
-			return null;
-		}
 	}
 
 

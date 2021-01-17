@@ -162,9 +162,17 @@ namespace db
 		{
 			//Debug.Assert( m_current.IsEmpty );
 
+			addTimedActions();
+
 			var current = m_current;
 			m_current = m_next;
 			m_next = current;
+
+			while( !m_current.IsEmpty )
+			{
+				m_actsExist.Release();
+			}
+
 
 			/*
 			foreach( var proc in m_processors )
@@ -176,7 +184,7 @@ namespace db
 			*/
 		}
 
-		/*
+		//*
 		public void wait_blah( int targetMs, int maxMs )
 		{
 			var done = 0;
@@ -222,13 +230,13 @@ namespace db
 			}
 
 		}
-		*/
+		//*/
 
 		public void addTimedActions()
 		{
 			var sortedFutureActions = m_futureActions.Sort( );
 
-			var future = TimeSpan.FromMilliseconds( 66 );
+			var future = TimeSpan.FromMilliseconds( 33.33333 );
 
 			var time = DateTime.Now + future;
 
@@ -242,6 +250,10 @@ namespace db
 
 					Interlocked.Exchange( ref m_futureActions, newActions );
 
+				}
+				else
+				{
+					break;
 				}
 			}
 		}

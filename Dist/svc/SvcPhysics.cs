@@ -53,7 +53,7 @@ namespace svc
 			base.handle( startup );
 
 			var timed = db.Act.create( timedTick );
-			m_sys.future( timed, 60.0, 0.0 );
+			m_sys.future( timed, 10.0, 0.0 );
 		}
 
 		DateTime m_lastTick = DateTime.Now;
@@ -65,7 +65,7 @@ namespace svc
 
 			lib.Log.debug( $"{Thread.CurrentThread.Name} Physics Timed Tick! {ts.TotalMilliseconds}" );
 			var act = db.Act.create( timedTick );
-			m_sys.future( act, 60.0, 0.0 );
+			m_sys.future( act, 10.0, 0.0 );
 		}
 
 		internal override void frameTick()

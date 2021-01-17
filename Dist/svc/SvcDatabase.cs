@@ -54,12 +54,13 @@ namespace svc
 
 				procMsg_block();
 
+				var snap = m_db.getSnapshot();
+
 				switch( m_dbState )
 				{
 					case DBState.Running:
-					m_sys.tick();
+						m_sys.tick();
 
-					var snap = m_db.getSnapshot();
 
 					break;
 				}
@@ -70,7 +71,7 @@ namespace svc
 				{
 					if( sw.Elapsed.TotalMilliseconds < 25 )
 					{
-						m_sys.ActsExist.Wait( 5 );
+						Thread.Sleep( 5 );
 					}
 				}
 

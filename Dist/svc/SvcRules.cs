@@ -47,7 +47,7 @@ namespace svc
 			base.handle( startup );
 
 			var timed = db.Act.create( timedTick );
-			m_sys.future( timed, 60.0, 0.0 );
+			m_sys.future( timed, 10.0, 0.0 );
 
 			var load = db.Act.create( loadEntities );
 			m_sys.next( load );
@@ -62,7 +62,7 @@ namespace svc
 
 			lib.Log.debug( $"{Thread.CurrentThread.Name} Rules Timed Tick! {ts.TotalMilliseconds}" );
 			var act = db.Act.create( timedTick );
-			m_sys.future( act, 60.0, 0.0 );
+			m_sys.future( act, 10.0, 0.0 );
 		}
 
 		internal override void frameTick()

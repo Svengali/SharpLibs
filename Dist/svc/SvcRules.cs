@@ -48,6 +48,9 @@ namespace svc
 
 			var timed = db.Act.create( timedTick );
 			m_sys.future( timed, 60.0, 0.0 );
+
+			var load = db.Act.create( loadEntities );
+			m_sys.next( load );
 		}
 
 		DateTime m_lastTick = DateTime.Now;
@@ -66,6 +69,36 @@ namespace svc
 		{
 			base.frameTick();
 		}
+
+		void loadEntities()
+		{
+
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -13,6 +13,12 @@ using System.Transactions;
 
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
+using Optional;
+
+using Vec = MathSharp.Vector;
+using Vec4 = System.Runtime.Intrinsics.Vector128<float>;
+
+
 namespace svc
 {
 
@@ -65,7 +71,65 @@ namespace svc
 		internal override void frameTick()
 		{
 			base.frameTick();
+
+			var snapshot = m_db.getSnapshot();
+
+			foreach( var pair in snapshot)
+			{
+				var ent = pair.Value;
+				
+				var physOpt = ent.com<ent.ComPhysics>();
+
+				physOpt.Match( ( phys ) => {
+					// TODO METRICS
+
+					var move = db.Act.create( () => { moveEntity( ent.id ); } );
+					m_sys.next( move );
+				},
+				() => {
+					// TODO METRICS
+				} );
+
+			}
 		}
+
+		void moveEntity( ent.EntityId id )
+		{
+			var (tx, entOpt) = m_db.checkout( id );
+
+			using( tx )
+			{
+				if( !entOpt.HasValue ) return;
+
+				var ent = entOpt.ValueOr( (ent.Entity)null );
+
+				var physOpt = ent.com<ent.ComPhysics>();
+
+				physOpt.Match( ( phys ) => {
+					// TODO METRICS
+
+					var scaledVel = Vec.Multiply( phys.vel, 1.0f / 60.0f );
+
+					var newPos = Vec.Add( phys.pos, scaledVel );
+
+					var newPosOpt = newPos.Value.Some();
+
+					var newPhys = phys.with( posOpt: newPosOpt );
+
+					//var newComs = ent.m_coms.Replace( phys, newPhys )
+
+					//ent.with()
+
+				},
+				() => {
+					// TODO METRICS
+				} );
+
+			}
+		}
+
+
+
 
 
 

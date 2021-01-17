@@ -150,7 +150,7 @@ namespace db
 				var start = new ThreadStart( p.run );
 
 				var th = new Thread( start );
-				th.Name = $"System_{count}";
+				th.Name = $"Processor_{count}";
 
 				th.Start();
 
@@ -160,21 +160,24 @@ namespace db
 
 		public void tick()
 		{
-			Debug.Assert( m_current.Count == 0 );
+			//Debug.Assert( m_current.IsEmpty );
 
 			var current = m_current;
 			m_current = m_next;
 			m_next = current;
 
+			/*
 			foreach( var proc in m_processors )
 			{
 				//Debug.Assert( proc.State == State.Waiting );
 
 				proc.kick();
 			}
+			*/
 		}
 
-		public void wait( int targetMs, int maxMs )
+		/*
+		public void wait_blah( int targetMs, int maxMs )
 		{
 			var done = 0;
 
@@ -219,7 +222,7 @@ namespace db
 			}
 
 		}
-
+		*/
 
 		public void addTimedActions()
 		{
@@ -258,7 +261,7 @@ namespace db
 				return res.Some();
 			}
 
-			m_actsExist.WaitAsync();
+			m_actsExist.Wait();
 
 			return Option.None<Act>();
 		}

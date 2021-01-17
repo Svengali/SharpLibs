@@ -111,10 +111,10 @@ namespace ent
 			var vEntity = old as Entity;
 
 			//m_id = ops.op( "m_id", vEntity.m_id, m_id );
-			m_test01	= ops.op( "m_test01", vEntity.m_test01, m_test01 );
-			m_com			= (Component)ops.op( "m_com", vEntity.m_com, m_com );
-			m_nz			= ops.op( "m_nz", vEntity.m_nz, m_nz );
-			m_coms		= (ImmutableArray<ComList>)ops.op( "m_coms", vEntity.m_coms, m_coms );
+			//m_test01	= ops.op( "m_test01", vEntity.m_test01, m_test01 );
+			//m_com			= (Component)ops.op( "m_com", vEntity.m_com, m_com );
+			//m_nz			= ops.op( "m_nz", vEntity.m_nz, m_nz );
+			//m_coms		= (ImmutableArray<ComList>)ops.op( "m_coms", vEntity.m_coms, m_coms );
 		}
 
 
@@ -123,97 +123,20 @@ namespace ent
 
 		uint m_version;
 
-		int m_test01 = 10;
+		//int m_test01 = 10;
 
-		Component m_com;
+		//Component m_com;
 
-		net.NearZero m_nz;
+		//net.NearZero m_nz;
 
-		ImmutableArray<ComList> m_coms;
+		//public ImmutableArray<ComList> m_coms;
 
 
-		//ImmutableDictionary<Type, Component> m_coms;
+		public ImmutableDictionary<Type, ent.Component> m_coms;
 
 
 	}
 
-	[gen.NetView( new Type[] { } )]
-	public partial class Component : net.Obj
-	{
-		public Type Type => m_type;
-		public EntityId Id => m_id;
-
-		protected Type m_type;
-		EntityId m_id;
-		internal uint m_version;
-
-		public override void DeltaFull( net.Obj old, net.DeltaOps ops )
-		{
-			base.DeltaFull( old, ops );
-
-			var vCom = old as Component;
-
-			m_id = (EntityId)ops.op( "m_id", (uint)vCom.m_id, (uint)m_id );
-		}
-
-	}
-
-
-	[gen.NetView( new Type[] { } )]
-	public partial class Component<T> : Component
-	{
-
-		/*
-		public Component()
-		{
-			m_type = typeof(T);
-		}
-		*/
-
-	}
-
-	[gen.NetView( new Type[] { } )]
-	public partial class ComWithCfg<T, TCFG> : Component<T>
-	{
-
-	}
-
-
-	public partial interface IComHealth
-	{
-		public bool isDead();
-	}
-
-	[gen.NetView( new Type[] { } )]
-	public partial class ComHealth : ComWithCfg<ComHealth, ComHealthCfg>
-	{
-		//[gen.History]
-		float m_health;
-		//readonly ImmutableList<float> m_health_history;
-
-		//[gen.NetView(new [] {typeof(net.View<Gameplay>)})]
-		//readonly ImmutableList<float> m_history;
-
-
-		public override void DeltaFull( net.Obj old, net.DeltaOps ops )
-		{
-			base.DeltaFull( old, ops );
-
-			var vCom = old as ComHealth;
-
-			m_health = ops.op( "m_health", vCom.m_health, m_health );
-
-		}
-	}
-
-
-
-	[gen.NetView( new Type[] { } )]
-	public partial class ComPhysics : ComWithCfg<ComPhysics, ComPhysicsCfg>
-	{
-		public Vec4 pos;
-		public Vec4 vel;
-	}
 
 
 

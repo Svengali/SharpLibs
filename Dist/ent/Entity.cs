@@ -38,7 +38,15 @@ namespace ent
 
 			//return U.None<U>();
 
-			return Option.None<U>();
+			if( m_coms.TryGetValue( typeof(U), out var com ) )
+			{
+				U uCom = (U)com;
+				return uCom.Some();
+			}
+			else
+			{
+				return Option.None<U>();
+			}
 		}
 
 

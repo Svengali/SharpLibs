@@ -27,7 +27,7 @@ namespace db
 
 		public State State => m_state;
 
-		public SemaphoreSlim Semaphore { get; private set; } = new SemaphoreSlim( 1 );
+		//public SemaphoreSlim Semaphore { get; private set; } = new SemaphoreSlim( 1 );
 		public int Processed => m_processed;
 
 		public Act DebugCurrentAct => m_debugCurrentAct;
@@ -60,12 +60,14 @@ namespace db
 			{
 				//lib.Log.trace( $"{Thread.CurrentThread.Name} Processed {m_processed} acts" );
 
+				/*
 				m_state = State.Waiting;
 				Semaphore.Wait();
 
 				m_state = State.Active;
 
 				m_processed = 0;
+				*/
 
 				return;
 			}
@@ -82,10 +84,12 @@ namespace db
 
 		}
 
+		/*
 		public void kick()
 		{
 			Semaphore.Release();
 		}
+		*/
 
 		volatile State m_state;
 		int m_processed = 0;

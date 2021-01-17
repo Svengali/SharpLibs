@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 
 namespace svc
@@ -43,11 +44,16 @@ namespace svc
 		public void run()
 		{
 
+			var sw = new Stopwatch();
 
-			var currentTime = DateTime.Now;
+			sw.Start();
 
 			while( true )
 			{
+				sw.Restart();
+
+				procMsg_block();
+
 				switch( m_dbState )
 				{
 					case DBState.Running:
@@ -58,28 +64,27 @@ namespace svc
 					break;
 				}
 
-				procMsg_block();
+				var tickTime = sw.Elapsed.TotalMilliseconds;
 
-				var spentTime = DateTime.Now;
-
-				var delta = spentTime - currentTime;
-
-				var deltaMS = delta.TotalMilliseconds;
-
-				var pause = Math.Max( 0, 33.0 - deltaMS );
-
-				var pauseInt = (int)pause;
-
-				Thread.Sleep( pauseInt );
-
-				if( pauseInt == 0 )
+				while( sw.Elapsed.TotalMilliseconds < 33.3 )
 				{
-					lib.Log.warn( $"Long frame {delta.TotalMilliseconds}" );
+					if( sw.Elapsed.TotalMilliseconds < 25 )
+					{
+						m_sys.ActsExist.Wait( 5 );
+					}
 				}
 
-				currentTime = DateTime.Now;
+				if( sw.Elapsed.TotalMilliseconds > 45 )
+				{
+					lib.Log.debug( $"Long loop of {sw.Elapsed.TotalMilliseconds}" );
+				}
 
+				sw.Stop();
 			}
+
+
+
+
 		}
 
 		override internal void handle( msg.Startup startup )

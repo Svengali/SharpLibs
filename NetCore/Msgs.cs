@@ -15,14 +15,14 @@ namespace msg
 	}
 	#endregion
 
-	[Serializable]
+	
 	public class Msg
 	{
 	}
 
 	#region Startup
 
-	[Serializable]
+	
 	public class Login : Msg
 	{
 		public String username;
@@ -30,13 +30,13 @@ namespace msg
 		public String password;
 	}
 
-	[Serializable]
+	
 	public class LoginRes : Msg
 	{
 		public bool result;
 	}
 
-	[Serializable]
+	
 	public class Create : Msg
 	{
 		public String username;
@@ -44,20 +44,20 @@ namespace msg
 		public String password;
 	}
 
-	[Serializable]
+	
 	public class CreateRes : Msg
 	{
 		public bool result;
 	}
 
 	/*
-	[Serializable]
+	
 	public class Begin : Entity
 	{
 	}
 	*/
 
-	[Serializable]
+	
 	public class Loaded : Msg
 	{
 	}
@@ -65,13 +65,13 @@ namespace msg
 	#endregion
 
 	#region Support
-	[Serializable]
+	
 	public class RequestFile : Msg
 	{
 		public string path;
 	}
 
-	[Serializable]
+	
 	public class SendFile : Msg
 	{
 		public string path;
@@ -83,7 +83,7 @@ namespace msg
 	#region Client -> Server
 
 	/*
-	[Serializable]
+	
 	public class MoveTo : Msg
 	{
 		public math.Vec3 pos;
@@ -91,13 +91,13 @@ namespace msg
 		public float rot;
 	}
 
-	[Serializable]
+	
 	public class DebugTeleportTo : Msg
 	{
 		public math.Vec3 pos;
 	}
 
-	[Serializable]
+	
 	public class Fire : Msg
 	{
 		//Types are explicitly named.  
@@ -114,25 +114,25 @@ namespace msg
 	#endregion
 
 	#region Server -> Client
-	[Serializable]
+	
 	public class Entity : Msg
 	{
 		public uint id;
 	}
 
-	[Serializable]
+	
 	public class Spawn : Entity, HandleMgr
 	{
 		public string configpath;
 		public math.Vec3 pos;
 	}
 
-	[Serializable]
+	
 	public class Despawn : Entity, HandleMgr
 	{
 	}
 
-	[Serializable]
+	
 	public class EntMove : Entity, HandleMgr
 	{
 		public math.Vec3d pos;
@@ -142,7 +142,7 @@ namespace msg
 	*/
 
 	/*
-	[Serializable]
+	
 	public class EntLoaded : Entity, HandleMgr
 	{
 	}

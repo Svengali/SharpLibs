@@ -84,7 +84,7 @@ namespace svc
 					// TODO METRICS
 
 					var move = db.Act.create( () => { moveEntity( ent.id ); } );
-					m_sys.next( move );
+					m_sys.forcedThisTick( move );
 				},
 				() => {
 					// TODO METRICS

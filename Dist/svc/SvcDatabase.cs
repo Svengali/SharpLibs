@@ -136,6 +136,8 @@ namespace svc
 		}
 
 
+		//internal void processTransaction( ent )
+
 
 		internal ent.DB   m_db;
 		internal ent.Sys  m_sys;

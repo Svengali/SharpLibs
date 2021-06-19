@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,9 +17,32 @@ namespace msg
 	}
 
 
+	public record RMsg()
+	{
+
+	}
+
+
+
+	public record RMsgTest( [CallerFilePath] string callerFilePath = "", [CallerMemberName] string callerMemberName = "", [CallerLineNumber] int callerLineNumber = 0 )
+	{
+
+	}
+
+
 
 	public class Msg : IMsg<svc.Service<Msg>, Msg>
 	{
+		string FilePath = "";
+		string MemberName = "";
+		int    Line = -1;
+
+		public Msg( [CallerFilePath] string callerFilePath = "", [CallerMemberName] string callerMemberName = "", [CallerLineNumber] int callerLineNumber = 0 )
+		{
+			FilePath = callerFilePath;
+			MemberName = callerMemberName;
+			Line = callerLineNumber;
+		}
 	}
 
 	public struct Answer<TSource, TMsg>
@@ -191,6 +215,12 @@ namespace msg
 
 	public class Startup : Msg
 	{
+		public Startup( [CallerFilePath] string callerFilePath = "", [CallerMemberName] string callerMemberName = "", [CallerLineNumber] int callerLineNumber = 0 )
+			:
+			base( callerFilePath, callerMemberName, callerLineNumber )
+		{
+		}
+
 		public svc.RTAddress from;
 	}
 

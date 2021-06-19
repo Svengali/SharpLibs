@@ -184,7 +184,7 @@ namespace db
 			*/
 		}
 
-		//*
+		/*
 		public void wait_blah( int targetMs, int maxMs )
 		{
 			var done = 0;

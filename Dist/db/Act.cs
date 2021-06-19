@@ -9,16 +9,19 @@ namespace db
 {
 	public class Act
 	{
-		public Action Fn => m_act;
+		public Func<CommitResults> Fn => m_act;
 
+
+		public string DebugInfo { get; private set; } = "";
 		public string Path { get; private set; } = "";
 		public int    Line { get; private set; } = -1;
 		public string Member { get; private set; } = "";
 
-		private Act( Action act, string path = "", int line = -1, string member = "" )
+		private Act( Func<CommitResults> act, string debugInfo = "{unknown_base}", string path = "", int line = -1, string member = "" )
 		{
 			m_act = act;
 
+			DebugInfo = debugInfo;
 			Path = path;
 			Line = line;
 			Member = member;
@@ -26,21 +29,39 @@ namespace db
 			//ExtractValue( act );
 		}
 
-		static public Act create( Action act, [CallerFilePath] string path = "", [CallerLineNumber] int line = -1, [CallerMemberName] string member = "" )
+		static public Act create( Func<CommitResults> act, string debugInfo = "{unknown}", [CallerFilePath] string path = "", [CallerLineNumber] int line = -1, [CallerMemberName] string member = "" )
 		{
 			//ExtractValue( act );
 
-			return new Act( act );
+			return new Act( act, debugInfo, path, line, member );
 		}
 
-		public static Act create<T>( Action<T> act, T p0, [CallerFilePath] string path = "", [CallerLineNumber] int line = -1, [CallerMemberName] string member = "" )
+		public static Act create<T>( Func<T, CommitResults> act, T p0, string debugInfo = "{unknown}", [CallerFilePath] string path = "", [CallerLineNumber] int line = -1, [CallerMemberName] string member = "" )
 		{
 			//ExtractValue( act );
 
 			//return new Act( act );
 
-			return new Act( () => { act( p0 ); } );
+			return new Act( () => { return act( p0 ); }, debugInfo, path, line, member );
 		}
+
+		// If we're not doing any commit ops we can just use these.
+		static public Act create( Action act, string debugInfo = "{unknown}", [CallerFilePath] string path = "", [CallerLineNumber] int line = -1, [CallerMemberName] string member = "" )
+		{
+			//ExtractValue( act );
+
+			return new Act( () => { act(); return CommitResults.Perfect; }, debugInfo, path, line, member );
+		}
+
+		public static Act create<T>( Action<T> act, T p0, string debugInfo = "{unknown}", [CallerFilePath] string path = "", [CallerLineNumber] int line = -1, [CallerMemberName] string member = "" )
+		{
+			//ExtractValue( act );
+
+			//return new Act( act );
+
+			return new Act( () => { act( p0 ); return CommitResults.Perfect; }, debugInfo, path, line, member );
+		}
+
 
 
 		public static void ExtractValue( Delegate lambda )
@@ -69,7 +90,7 @@ namespace db
 
 
 
-		Action m_act;
+		Func<CommitResults> m_act;
 
 	}
 }

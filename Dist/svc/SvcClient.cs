@@ -103,7 +103,7 @@ namespace svc
 				}
 				else
 				{
-					lib.Log.warn( $"Long frame {delta.TotalMilliseconds}" );
+					log.warn( $"Long frame {delta.TotalMilliseconds}" );
 				}
 
 				currentTime = DateTime.Now;

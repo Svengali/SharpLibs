@@ -138,11 +138,11 @@ namespace svc
 
 								m_handlingMethod[args[0]] = fn;
 
-								lib.Log.debug( $"{GetType().Name} is handling {args[0].Name}" );
+								log.debug( $"{GetType().Name} is handling {args[0].Name}" );
 							}
 							else
 							{
-								lib.Log.warn( $"{args[0].Name} is unhandled in {GetType().Name}" );
+								log.warn( $"{args[0].Name} is unhandled in {GetType().Name}" );
 								m_handlingMethod[args[0]] = unhandled;
 								fn = unhandled;
 							}
@@ -161,7 +161,7 @@ namespace svc
 							}
 							catch( Exception e )
 							{
-								lib.Log.error( $"Exception while calling { ctx.Msg.GetType()}.  {e}" );
+								log.error( $"Exception while calling { ctx.Msg.GetType()}.  {e}" );
 							}
 						}
 						else
@@ -213,7 +213,7 @@ namespace svc
 							}
 							catch( Exception ex )
 							{
-								lib.Log.warn( $"Exception while calling {ctx.Msg.GetType()}.  Ex {ex}" );
+								log.warn( $"Exception while calling {ctx.Msg.GetType()}.  Ex {ex}" );
 							}
 						}
 						else
@@ -366,21 +366,21 @@ namespace svc
 
 			if( ts.TotalSeconds > 1.0 )
 			{
-				lib.Log.debug( $"{(uint)id & 0xffff:X4} got {m_pingsRecvd} Pings in {ts.TotalSeconds} seconds" );
+				log.debug( $"{(uint)id & 0xffff:X4} got {m_pingsRecvd} Pings in {ts.TotalSeconds} seconds" );
 
 				m_lastLoggedPing = DateTime.Now;
 				m_pingsRecvd = 0;
 
 			}
 
-			//lib.Log.debug( $"{(uint)id & 0xffff:X4}  got Ping from {ping.address}" );
+			//log.debug( $"{(uint)id & 0xffff:X4}  got Ping from {ping.address}" );
 
 			var address = new RTAddress( s_mgr.Id, id );
 
 			/*
 			if( address != ping.address && !m_otherServices.Contains(ping.address) )
 			{
-				lib.Log.debug( $"{(uint)id & 0xffff:X4}  PING adding service {ping.address}" );
+				log.debug( $"{(uint)id & 0xffff:X4}  PING adding service {ping.address}" );
 				m_otherServices = m_otherServices.Add( ping.address );
 			}
 			*/
@@ -393,14 +393,14 @@ namespace svc
 			}
 			else
 			{
-				lib.Log.info( $"Finished doing Ping tests." );
+				log.info( $"Finished doing Ping tests." );
 			}
 		}
 
 
 		virtual internal void handle( msg.Startup startup )
 		{
-			lib.Log.debug( $"{(uint)id & 0xffff:X4} got Startup from" );
+			log.debug( $"{(uint)id & 0xffff:X4} got Startup from" );
 
 			var address = new RTAddress( s_mgr.Id, id );
 			var ready = new msg.Ready{ address = address };
@@ -417,13 +417,13 @@ namespace svc
 
 		internal void handle( msg.Ready ready )
 		{
-			lib.Log.debug( $"{(uint)id & 0xffff:X4}  got Ready from {ready.address}" );
+			log.debug( $"{(uint)id & 0xffff:X4}  got Ready from {ready.address}" );
 
 			var address = new RTAddress( s_mgr.Id, id );
 
 			if( address != ready.address && !m_otherServices.Contains( ready.address ) )
 			{
-				lib.Log.debug( $"{(uint)id & 0xffff:X4} READY adding service {ready.address}" );
+				log.debug( $"{(uint)id & 0xffff:X4} READY adding service {ready.address}" );
 				m_otherServices = m_otherServices.Add( ready.address );
 
 				var readyBack = new msg.Ready{ address = address };

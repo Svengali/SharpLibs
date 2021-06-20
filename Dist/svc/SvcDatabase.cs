@@ -77,7 +77,7 @@ namespace svc
 
 				if( sw.Elapsed.TotalMilliseconds > 45 )
 				{
-					lib.Log.debug( $"Long loop of {sw.Elapsed.TotalMilliseconds}" );
+					log.debug( $"Long loop of {sw.Elapsed.TotalMilliseconds}" );
 				}
 
 				sw.Stop();
@@ -128,7 +128,7 @@ namespace svc
 
 		internal virtual void frameTick()
 		{
-			//lib.Log.debug( $"{Thread.CurrentThread.Name} Frame Tick!" );
+			//log.debug( $"{Thread.CurrentThread.Name} Frame Tick!" );
 			var act = db.Act.create( frameTick );
 			m_sys.next( act );
 

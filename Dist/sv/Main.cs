@@ -64,7 +64,7 @@ namespace sv
 			}
 			var endMs = timer.Current;
 
-			lib.Log.info( $"testDirect: {endMs}" );
+			log.info( $"testDirect: {endMs}" );
 		}
 
 		public void testInvoke()
@@ -88,7 +88,7 @@ namespace sv
 			}
 			var endMs = timer.Current;
 
-			lib.Log.info( $"testInvoke: {endMs}" );
+			log.info( $"testInvoke: {endMs}" );
 		}
 
 		public delegate void dlgHandler( TestMsg msg );
@@ -114,9 +114,9 @@ namespace sv
 			}
 			var endMs = timer.CurrentMS;
 
-			lib.Log.info( $"testDelegate: {endMs}" );
+			log.info( $"testDelegate: {endMs}" );
 			/*/
-			lib.Log.info( $"testDelegate: OFF" );
+			log.info( $"testDelegate: OFF" );
 			//*/
 
 
@@ -153,7 +153,7 @@ namespace sv
 			var endMs = timer.Current;
 
 
-			lib.Log.info( $"testExpression: {endMs}" );
+			log.info( $"testExpression: {endMs}" );
 		}
 
 		public void handle( TestMsg msg )
@@ -260,73 +260,45 @@ namespace sv
 		//*/
 
 
-		static public void log( lib.LogEvent evt )
+		static public void logOut( log.LogEvent evt )
 		{
-			/*
-			switch( evt.LogType )
-			{
-				case lib.LogType.Error:
-				s_logWin.ForegroundColor = ConsoleColor.Red;
-				break;
-				case lib.LogType.Warn:
-				s_logWin.ForegroundColor = ConsoleColor.Yellow;
-				break;
-				case lib.LogType.Info:
-				s_logWin.ForegroundColor = ConsoleColor.Gray;
-				break;
-
-			}
-
-			s_logWin.WriteLine( $"{evt.Msg}" );
-	
-		Invalid = 0,
-		Trace = 1,
-		Debug = 2,
-		Info = 3,
-		Warn = 4,
-		Error = 5,
-		Fatal = 6,
-			
-			
-			/*/
-
-			var seperatorSymbol = ":";
+			var seperatorSymbol = "|";
 
 			switch( evt.LogType )
 			{
-				case lib.LogType.Trace:
-				Console.ForegroundColor = ConsoleColor.DarkGray;
+				case log.LogType.Trace:
+					seperatorSymbol = ":";
+					Console.ForegroundColor = ConsoleColor.DarkGray;
 				break;
-				case lib.LogType.Debug:
-				Console.ForegroundColor = ConsoleColor.Gray;
+				case log.LogType.Debug:
+					seperatorSymbol = ":";
+					Console.ForegroundColor = ConsoleColor.Gray;
 				break;
-				case lib.LogType.Info:
-				seperatorSymbol = ">";
-				Console.ForegroundColor = ConsoleColor.DarkGreen;
+				case log.LogType.Info:
+					Console.ForegroundColor = ConsoleColor.DarkGreen;
 				break;
-				case lib.LogType.High:
-				seperatorSymbol = ">";
-				Console.ForegroundColor = ConsoleColor.Cyan;
+				case log.LogType.High:
+					Console.ForegroundColor = ConsoleColor.Cyan;
 				break;
-				case lib.LogType.Warn:
-				seperatorSymbol = ">";
-				Console.ForegroundColor = ConsoleColor.Yellow;
+				case log.LogType.Warn:
+					seperatorSymbol = "#";
+					Console.ForegroundColor = ConsoleColor.Yellow;
 				break;
-				case lib.LogType.Error:
-				seperatorSymbol = ">";
-				Console.ForegroundColor = ConsoleColor.DarkRed;
-				Console.BackgroundColor = ConsoleColor.DarkGray;
+				case log.LogType.Error:
+					seperatorSymbol = "#";
+					Console.ForegroundColor = ConsoleColor.DarkRed;
+					Console.BackgroundColor = ConsoleColor.DarkGray;
 				break;
-				case lib.LogType.Fatal:
-				seperatorSymbol = ">";
-				Console.ForegroundColor = ConsoleColor.Red;
-				Console.BackgroundColor = ConsoleColor.DarkGray;
+				case log.LogType.Fatal:
+					seperatorSymbol = "#";
+					Console.ForegroundColor = ConsoleColor.Red;
+					Console.BackgroundColor = ConsoleColor.DarkGray;
 				break;
 			}
 
 
 
-			char sym = lib.Log.getSymbol( evt.LogType );
+			char sym = log.getSymbol( evt.LogType );
 
 			var truncatedCat = evt.Cat.Substring(0, Math.Min( 8, evt.Cat.Length ) );
 
@@ -336,8 +308,6 @@ namespace sv
 			Console.WriteLine( finalLine );
 
 			Console.ResetColor();
-			//*/
-
 
 		}
 
@@ -375,38 +345,38 @@ namespace sv
 			string logpath = $"logs/{Environment.MachineName}_{date}_{p.Id}.log";
 
 
-			lib.Log.create( logpath );
+			log.create( logpath );
 
-			lib.Log.s_log.addDelegate( log );
+			log.addDelegate( logOut );
 
-			lib.Log.info( $"Saving log to [{logpath}]" );
+			log.info( $"Saving log to [{logpath}]" );
 
 
 			//Log examples of each log type
-			lib.Log.trace( $"Trace test" );
-			lib.Log.debug( $"Debug test" );
-			lib.Log.info( $"Info test" );
-			lib.Log.high( $"High test" );
-			lib.Log.warn( $"Warn test" );
-			lib.Log.error( $"Error test" );
-			lib.Log.fatal( $"Fatal test" );
+			log.trace( $"Trace test" );
+			log.debug( $"Debug test" );
+			log.info( $"Info test" );
+			log.high( $"High test" );
+			log.warn( $"Warn test" );
+			log.error( $"Error test" );
+			log.fatal( $"Fatal test" );
 
 
 
 			//*
-			lib.Log.info( $"Command line {Environment.CommandLine}" );
-			lib.Log.info( $"Current working directory {Environment.CurrentDirectory}" );
+			log.info( $"Command line {Environment.CommandLine}" );
+			log.info( $"Current working directory {Environment.CurrentDirectory}" );
 
-			lib.Log.info( $"Running as {( Environment.Is64BitProcess ? "64" : "32" )}bit on a {( Environment.Is64BitOperatingSystem ? "64" : "32" )}bit machine." );
-			lib.Log.info( $"This machine has {Environment.ProcessorCount} processors." );
+			log.info( $"Running as {( Environment.Is64BitProcess ? "64" : "32" )}bit on a {( Environment.Is64BitOperatingSystem ? "64" : "32" )}bit machine." );
+			log.info( $"This machine has {Environment.ProcessorCount} processors." );
 
-			lib.Log.info( $"Currently given {Environment.WorkingSet} memory" );
-			lib.Log.info( $"System page size of {Environment.SystemPageSize}" );
+			log.info( $"Currently given {Environment.WorkingSet} memory" );
+			log.info( $"System page size of {Environment.SystemPageSize}" );
 
-			lib.Log.info( $"Running on CLR {Environment.Version}" );
-			lib.Log.info( $"Running on {Environment.OSVersion}" );
+			log.info( $"Running on CLR {Environment.Version}" );
+			log.info( $"Running on {Environment.OSVersion}" );
 
-			lib.Log.info( $"Running as {Environment.UserName}" );
+			log.info( $"Running as {Environment.UserName}" );
 			//*/
 
 
@@ -414,7 +384,7 @@ namespace sv
 			var test = new TestCalls();
 			test.runAllTests();
 			/*/
-			lib.Log.info( $"Skipping tests." );
+			log.info( $"Skipping tests." );
 			//*/
 
 
@@ -427,7 +397,7 @@ namespace sv
 
 
 			//Load configs
-			lib.Log.info( $"Loading config {configPath}" );
+			log.info( $"Loading config {configPath}" );
 			//m_cfg = lib.Config.load<ServerCfg>( configPath );
 			m_cfg = res.Mgr.lookup<ServerCfg>( configPath );
 
@@ -455,19 +425,19 @@ namespace sv
 			{
 				if( nic.OperationalStatus == OperationalStatus.Up )
 				{
-					lib.Log.logProps( nic, "Network Interface (up)", lib.LogType.Info, prefix: "  " );
+					log.logProps( nic, "Network Interface (up)", log.LogType.Info, prefix: "  " );
 				}
 				else
 				{
-					lib.Log.info( "Network Interface (down)" );
-					lib.Log.info( $"  {nic.Name} {nic.Description}" );
+					log.info( "Network Interface (down)" );
+					log.info( $"  {nic.Name} {nic.Description}" );
 				}
 
 				foreach( UnicastIPAddressInformation addrInfo in
 						nic.GetIPProperties().UnicastAddresses )
 				{
-					//lib.Log.logProps( addrInfo, " Addresses", lib.LogType.Info, prefix: "    " );
-					lib.Log.debug( $"    {addrInfo.Address}" );
+					//log.logProps( addrInfo, " Addresses", log.LogType.Info, prefix: "    " );
+					log.debug( $"    {addrInfo.Address}" );
 				}
 			}
 			//*/

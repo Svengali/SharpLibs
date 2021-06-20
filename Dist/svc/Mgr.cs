@@ -44,7 +44,7 @@ namespace svc
 		{
 			if( svc != null )
 			{
-				lib.Log.info( $"Starting service {svc}" );
+				log.info( $"Starting service {svc}" );
 
 				Imm.AddOrUpdate( ref m_services, svc.id, svc, ( k, v ) => svc );
 
@@ -55,11 +55,11 @@ namespace svc
 
 					thread.Start();
 
-					lib.Log.info( $"{svc} is starting a thread to run.", "svc" );
+					log.info( $"{svc} is starting a thread to run.", "svc" );
 				}
 				else
 				{
-					lib.Log.info( $"{svc} is NOT starting a thread to run.", "svc" );
+					log.info( $"{svc} is NOT starting a thread to run.", "svc" );
 				}
 
 			}
@@ -123,7 +123,7 @@ namespace svc
 			/*
 			if( m_floatingMax < m_q.Count )
 			{
-				lib.Log.warn( $"TSource Q hit highwater of {m_q.Count} in {GetType()}." );
+				log.warn( $"TSource Q hit highwater of {m_q.Count} in {GetType()}." );
 				m_floatingMax = (uint)m_q.Count;
 			}
 			*/
@@ -160,7 +160,7 @@ namespace svc
 
 				if( gotService && svc != null )
 				{
-					lib.Log.info( $"Starting service {svc}" );
+					log.info( $"Starting service {svc}" );
 
 					Imm.AddOrUpdate( ref m_services, svc.id, svc, ( k, v ) => svc );
 
@@ -171,11 +171,11 @@ namespace svc
 
 						thread.Start();
 
-						lib.Log.info( $"{svc} is starting a thread to run.", "svc" );
+						log.info( $"{svc} is starting a thread to run.", "svc" );
 					}
 					else
 					{
-						lib.Log.info( $"{svc} is NOT starting a thread to run.", "svc" );
+						log.info( $"{svc} is NOT starting a thread to run.", "svc" );
 					}
 
 				}

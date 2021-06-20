@@ -128,12 +128,12 @@ namespace net
 		//*
 		public static void onChanged<T>( this T old, T value )
 		{
-			lib.Log.debug( $"<T> has changed." );
+			log.debug( $"<T> has changed." );
 		}
 
 		public static void onChanged( this int old, int value )
 		{
-			lib.Log.debug( $"int has changed." );
+			log.debug( $"int has changed." );
 		}
 		//*/
 	}
@@ -519,7 +519,7 @@ namespace net
 				else
 				{
 					m_writer.Write( false );
-					lib.Log.warn( $"The object in {name} is not serializable" );
+					log.warn( $"The object in {name} is not serializable" );
 				}
 			}
 			else

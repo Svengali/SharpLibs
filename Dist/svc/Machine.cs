@@ -72,11 +72,11 @@ namespace svc
 			frames++;
 
 			Thread.Sleep( 1000 );
-			lib.Log.debug( "Tick" );
+			log.debug( "Tick" );
 			Thread.Sleep( 1000 );
-			lib.Log.debug( "Tock" );
+			log.debug( "Tock" );
 			Thread.Sleep( 1000 );
-			lib.Log.debug( "Tick" );
+			log.debug( "Tick" );
 
 			//wait a bit before timing
 			//if( frames == 60 * 2 )
@@ -117,9 +117,9 @@ namespace svc
 				floatTime = stopwatch.ElapsedTicks;
 
 				//what took the longest? class, struct, float (works in release mode)
-				lib.Log.debug( $"{(uint)id & 0xffff:X4}  class array time: {classTime:10}" );
-				lib.Log.debug( $"{(uint)id & 0xffff:X4} struct array time: {structTime:10}" );
-				lib.Log.debug( $"{(uint)id & 0xffff:X4}  float array time: {floatTime:10}" );
+				log.debug( $"{(uint)id & 0xffff:X4}  class array time: {classTime:10}" );
+				log.debug( $"{(uint)id & 0xffff:X4} struct array time: {structTime:10}" );
+				log.debug( $"{(uint)id & 0xffff:X4}  float array time: {floatTime:10}" );
 			}
 		}
 
@@ -157,7 +157,7 @@ namespace svc
 
 			var address = new RTAddress( s_mgr.Id, id );
 
-			lib.Log.info( $"Starting up {cfg.res.services.Length} services" );
+			log.info( $"Starting up {cfg.res.services.Length} services" );
 			foreach( var svc in cfg.res.services )
 			{
 				send( svc, address );
@@ -199,7 +199,7 @@ namespace svc
 						//parms[0] = new lib.Token( start.name );
 						parms[0] = cfg;
 
-						lib.Log.info( $"Starting service {"unknown"} of type {refType.Name} using config {start.configPath}" );
+						log.info( $"Starting service {"unknown"} of type {refType.Name} using config {start.configPath}" );
 
 						svc.Service<msg.Msg> newService = (svc.Service<msg.Msg>)cons.Invoke( parms );
 
@@ -222,19 +222,19 @@ namespace svc
 					}
 					catch( Exception ex )
 					{
-						lib.Log.error( $"Exception while calling service constructor {ex}" );
+						log.error( $"Exception while calling service constructor {ex}" );
 					}
 				}
 				else
 				{
-					lib.Log.warn( $"Could not find service of type {start.type}" );
+					log.warn( $"Could not find service of type {start.type}" );
 				}
 
 
 			}
 			else
 			{
-				lib.Log.warn( $"Could not find service of type {start.type}" );
+				log.warn( $"Could not find service of type {start.type}" );
 			}
 		}
 

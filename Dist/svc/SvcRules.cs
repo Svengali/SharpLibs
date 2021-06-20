@@ -64,7 +64,7 @@ namespace svc
 			var ts = DateTime.Now - m_lastTick;
 			m_lastTick = DateTime.Now;
 
-			lib.Log.debug( $"{Thread.CurrentThread.Name} Rules Timed Tick! {ts.TotalMilliseconds}" );
+			log.debug( $"{Thread.CurrentThread.Name} Rules Timed Tick! {ts.TotalMilliseconds}" );
 			var act = db.Act.create( timedTick );
 			m_sys.future( act, 10.0, 0.0 );
 		}
